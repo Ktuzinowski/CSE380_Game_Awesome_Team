@@ -2,11 +2,15 @@ import MathUtils from "../../../Wolfie2D/Utils/MathUtils";
 import { PlayerStates } from "../PlayerController";
 import PlayerState from "./PlayerState";
 
-export default class Fall extends PlayerState {
+export default class Airborne extends PlayerState {
 
     onEnter(options: Record<string, any>): void {
+        console.log("ENTERING AIRBORNE")
         // If we're falling, the vertical velocity should be >= 0
-        this.parent.velocity.y = 0;
+        if("velDelta" in options) {
+            this.parent.velocity.y += options["velDelta"]
+            this.owner.onGround = false;
+        }
     }
 
     update(deltaT: number): void {
@@ -15,7 +19,7 @@ export default class Fall extends PlayerState {
         if (this.owner.onGround) {
             if(this.parent.velocity.y < 50 && this.parent.velocity.y > -50)
                 this.finished(PlayerStates.IDLE)
-            else
+            else 
                 this.parent.velocity.y = this.prev.y * -1 * 0.6;
         } 
         // Otherwise, keep moving
