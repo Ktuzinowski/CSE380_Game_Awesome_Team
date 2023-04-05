@@ -16,7 +16,7 @@ export default class Level1 extends HW3Level {
     public static readonly PLAYER_SPRITE_PATH = "hw4_assets/spritesheets/Hero.json";
 
     public static readonly TILEMAP_KEY = "LEVEL1";
-    public static readonly TILEMAP_PATH = "hw4_assets/tilemaps/HW4Level1.json";
+    public static readonly TILEMAP_PATH = "hw4_assets/tilemaps/KevinLevelOne.json";
     public static readonly TILEMAP_SCALE = new Vec2(2, 2);
     public static readonly DESTRUCTIBLE_LAYER_KEY = "Destructable";
     public static readonly WALLS_LAYER_KEY = "Main";
@@ -94,7 +94,7 @@ export default class Level1 extends HW3Level {
      */
     protected initializeViewport(): void {
         super.initializeViewport();
-        this.viewport.setBounds(16, 16, 496, 512);
+        this.viewport.setBounds(16, 16, 1000, 2000);
     }
 
 }
