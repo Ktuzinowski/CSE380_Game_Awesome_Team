@@ -24,6 +24,7 @@ export default class Walk extends PlayerState {
 		} 
         // If the player hits the jump key - transition to the Jump state
         else if (Input.isJustPressed(HW3Controls.JUMP)) {
+            this.parent.velocity.y = -200;
             this.finished(PlayerStates.AIRBORNE);
         } 
         // If the player is not on the ground, transition to the fall state

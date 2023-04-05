@@ -7,10 +7,7 @@ export default class Airborne extends PlayerState {
     onEnter(options: Record<string, any>): void {
         console.log("ENTERING AIRBORNE")
         // If we're falling, the vertical velocity should be >= 0
-        if("velDelta" in options) {
-            this.parent.velocity.y += options["velDelta"]
-            this.owner.onGround = false;
-        }
+        
     }
 
     update(deltaT: number): void {

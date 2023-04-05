@@ -26,6 +26,7 @@ export default class Idle extends PlayerState {
 			this.finished(PlayerStates.RUN);
 		} 
         if (Input.isJustPressed(HW3Controls.JUMP)) {
+            this.parent.velocity.y = -200;
             this.finished(PlayerStates.AIRBORNE);
         } 
         // If the player is not on the ground, transition to the falling state
@@ -44,7 +45,6 @@ export default class Idle extends PlayerState {
 
 	public onExit(): Record<string, any> {
 		this.owner.animation.stop();
-        if(Input.isJustPressed(HW3Controls.JUMP)) {return {"velDelta": -200}}
 		return {};
 	}
 }
