@@ -2,9 +2,8 @@ import StateMachineAI from "../../Wolfie2D/AI/StateMachineAI";
 import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 import OrthogonalTilemap from "../../Wolfie2D/Nodes/Tilemaps/OrthogonalTilemap";
 
-import Fall from "./PlayerStates/Fall";
+import Airborne from "./PlayerStates/Airborne";
 import Idle from "./PlayerStates/Idle";
-import Jump from "./PlayerStates/Jump";
 import Run from "./PlayerStates/Run";
 
 import PlayerWeapon from "./PlayerWeapon";
@@ -14,7 +13,6 @@ import { HW3Controls } from "../HW3Controls";
 import HW3AnimatedSprite from "../Nodes/HW3AnimatedSprite";
 import MathUtils from "../../Wolfie2D/Utils/MathUtils";
 import { HW3Events } from "../HW3Events";
-import Dead from "./PlayerStates/Dead";
 
 /**
  * Animation keys for the player spritesheet
@@ -39,9 +37,7 @@ export const PlayerTweens = {
 export const PlayerStates = {
     IDLE: "IDLE",
     RUN: "RUN",
-	JUMP: "JUMP",
-    FALL: "FALL",
-    DEAD: "DEAD",
+    AIRBORNE: "Airborne"
 } as const
 
 /**
@@ -81,9 +77,7 @@ export default class PlayerController extends StateMachineAI {
         // Add the different states the player can be in to the PlayerController 
 		this.addState(PlayerStates.IDLE, new Idle(this, this.owner));
 		this.addState(PlayerStates.RUN, new Run(this, this.owner));
-        this.addState(PlayerStates.JUMP, new Jump(this, this.owner));
-        this.addState(PlayerStates.FALL, new Fall(this, this.owner));
-        this.addState(PlayerStates.DEAD, new Dead(this, this.owner));
+        this.addState(PlayerStates.AIRBORNE, new Airborne(this, this.owner));
         
         // Start the player in the Idle state
         this.initialize(PlayerStates.IDLE);
@@ -143,6 +137,5 @@ export default class PlayerController extends StateMachineAI {
         // When the health changes, fire an event up to the scene.
         this.emitter.fireEvent(HW3Events.HEALTH_CHANGE, {curhp: this.health, maxhp: this.maxHealth});
         // If the health hit 0, change the state of the player
-        if (this.health === 0) { this.changeState(PlayerStates.DEAD); }
     }
 }
