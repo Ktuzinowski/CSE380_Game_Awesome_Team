@@ -327,9 +327,9 @@ export default abstract class HW3Level extends Scene {
         this.destructable = this.getTilemap(this.destructibleLayerKey) as OrthogonalTilemap;
 
         // Add physics to the destructible layer of the tilemap
-        ///this.destructable.addPhysics();
-        //this.destructable.setGroup(HW3PhysicsGroups.DESTRUCTABLE);
-        //this.destructable.setTrigger(HW3PhysicsGroups.PLAYER_WEAPON, HW3Events.PARTICLE_HIT_DESTRUCTIBLE, null);
+        // this.destructable.addPhysics();
+        // this.destructable.setGroup(HW3PhysicsGroups.DESTRUCTABLE);
+        // this.destructable.setTrigger(HW3PhysicsGroups.PLAYER_WEAPON, HW3Events.PARTICLE_HIT_DESTRUCTIBLE, null);
     }
     /**
      * Handles all subscriptions to events
