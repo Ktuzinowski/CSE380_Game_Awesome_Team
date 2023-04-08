@@ -8,14 +8,15 @@ export default class Airborne extends PlayerState {
 
     onEnter(options: Record<string, any>): void {
         console.log("ENTERING AIRBORNE")
+        console.log(this.parent.velocity.y)
         // If we're falling, the vertical velocity should be >= 0
         
     }
 
     update(deltaT: number): void {
-
+        console.log(this.parent.velocity.y)
         // If the player hits the ground, start idling and check if we should take damage
-        if (this.owner.onGround) {
+        if (this.owner.onGround || this.owner.onCeiling) {
             this.parent.health -= Math.floor(this.parent.velocity.y / 300);
             this.parent.fuel += 0;
             if(this.parent.velocity.y < 50 && this.parent.velocity.y > -50)

@@ -174,6 +174,7 @@ export default class PlayerController extends StateMachineAI {
                     this.slimeBounceTimer.start();
                 }
                 this.velocity.y *= 2;
+                console.log(this.velocity.y + " SLIME")
                 this.owner.move(this.velocity.scaled(this.deltaT));
                 break;
             }

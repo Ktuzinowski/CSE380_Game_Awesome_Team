@@ -216,7 +216,7 @@
             2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
          "height":100,
          "id":2,
-         "name":"Ground",
+         "name":"Main",
          "opacity":1,
          "properties":[
                 {
@@ -338,10 +338,15 @@
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
          "height":100,
          "id":3,
-         "name":"Slimes",
+         "name":"Sleeping Slimes",
          "opacity":1,
          "properties":[
-                {
+            {
+               "name":"Collidable",
+               "type":"bool",
+               "value":true
+              },    
+               {
                  "name":"Bounceable",
                  "type":"bool",
                  "value":true

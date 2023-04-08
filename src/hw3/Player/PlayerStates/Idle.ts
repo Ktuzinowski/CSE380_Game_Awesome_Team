@@ -34,9 +34,10 @@ export default class Idle extends PlayerState {
             this.finished(PlayerStates.AIRBORNE);
         } else {
             // Update the vertical velocity of the player
-            this.parent.velocity.y += this.gravity*deltaT;
+            //this.parent.velocity.y += this.gravity*deltaT;
+            console.log(this.parent.velocity.y + "in idle")
             // Move the player
-            this.owner.move(this.parent.velocity.scaled(deltaT));
+            //this.owner.move(this.parent.velocity.scaled(deltaT));
         }
         
 

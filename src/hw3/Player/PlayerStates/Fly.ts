@@ -9,12 +9,12 @@ import PlayerState from "./PlayerState";
 
 export default class Fly extends PlayerState {
 	public onEnter(options: Record<string, any>): void {
-        
+        console.log("ENTERING FLY")
         // Give the player a burst of upward momentum
         if(this.parent.fuel !== 0) {
             
         this.parent.fuel -= 1;
-        this.parent.velocity.y += -20;
+        this.parent.velocity.y += -22;
         }
         // Play the eventual fly sound for the player
 		//this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: scene.getJumpAudioKey(), loop: false, holdReference: false});
@@ -23,6 +23,8 @@ export default class Fly extends PlayerState {
 	public update(deltaT: number): void {
         // Update the direction the player is facing
         super.update(deltaT);
+        
+        console.log(this.parent.velocity.y + 'in fly')
         if(Input.isPressed(HW3Controls.FLY)) {
             this.finished(PlayerStates.FLY);
         }

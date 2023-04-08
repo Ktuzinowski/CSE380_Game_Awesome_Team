@@ -23,6 +23,8 @@ export default class JoeLevel2 extends HW3Level {
     public static readonly DESTRUCTIBLE_LAYER_KEY = "Destructable";
     public static readonly WALLS_LAYER_KEY = "Main";
 
+    public static readonly SLEEPING_SLIMES_LAYER_KEY = "Sleeping Slimes"
+    public static readonly PAINFUL_SLIMES_LAYER_KEY = "Painful Slimes"
     public static readonly LEVEL_MUSIC_KEY = "LEVEL_MUSIC";
     public static readonly LEVEL_MUSIC_PATH = "hw4_assets/music/hw5_level_music.wav";
 
