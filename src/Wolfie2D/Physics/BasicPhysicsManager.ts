@@ -137,6 +137,8 @@ export default class BasicPhysicsManager extends PhysicsManager {
 			node.onGround = false;
 			node.onCeiling = false;
 			node.onWall = false;
+			node.onLeftSide = false;
+			node.onRightSide = false;
 			node.collidedWithTilemap = false;
 			node.isColliding = false;
 
@@ -289,6 +291,7 @@ export default class BasicPhysicsManager extends PhysicsManager {
 								node.collidedWithTilemap = true;
 							}
 
+							// important stuff for checking collision side	
 							if(collisionSide.y === -1){
 								// Node is on top of overlap, so onGround
 								node.onGround = true;
@@ -296,6 +299,11 @@ export default class BasicPhysicsManager extends PhysicsManager {
 								// Node is on bottom of overlap, so onCeiling
 								node.onCeiling = true;
 							} else {
+								if (collisionSide.x === -1) {
+									node.onLeftSide = true;
+								} else if (collisionSide.x === 1) {
+									node.onRightSide = true;
+								}
 								// Node wasn't touching on y, so it is touching on x
 								node.onWall = true;
 							}

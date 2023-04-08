@@ -11,9 +11,8 @@ export default class Airborne extends PlayerState {
     }
 
     update(deltaT: number): void {
-
         // If the player hits the ground, start idling and check if we should take damage
-        if (this.owner.onGround) {
+        if (this.owner.onGround || this.owner.onCeiling) {
             if(this.parent.velocity.y < 50 && this.parent.velocity.y > -50)
                 this.finished(PlayerStates.IDLE)
             else 
@@ -30,6 +29,7 @@ export default class Airborne extends PlayerState {
             // Move the player
             this.owner.move(this.parent.velocity.scaled(deltaT));
         }
+
 
         this.prev = this.parent.velocity.clone();
         // console.log(this.parent.velocity.y);

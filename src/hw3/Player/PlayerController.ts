@@ -144,6 +144,14 @@ export default class PlayerController extends StateMachineAI {
         switch (event.type) {
             case HW3Events.BOUNCED_ON_PAIN: {
                 console.log("This is painful...")
+                if (this.slimeBounceTimer.getCurrentStateOfTimer() === TimerState.ACTIVE) {
+                    return;
+                } else {
+                    this.slimeBounceTimer.reset();
+                    this.slimeBounceTimer.start();
+                }
+                this.velocity.y *= 2;
+                this.owner.move(this.velocity.scaled(this.deltaT));
                 break;
             }
             case HW3Events.BOUNCED_ON_SLIME: {

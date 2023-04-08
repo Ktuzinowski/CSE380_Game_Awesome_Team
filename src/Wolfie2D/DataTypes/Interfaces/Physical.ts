@@ -22,6 +22,12 @@ export default interface Physical {
     /** Reprsents whether the object is on the wall or not. */
     onWall: boolean;
 
+    /** Represents if object is on the left side of the object */
+    onLeftSide: boolean;
+
+    /** Represents if object is on the right side of the object */
+    onRightSide: boolean;
+
     /** Reprsents whether the object is on the ceiling or not. */
     onCeiling: boolean;
 

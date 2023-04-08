@@ -37,6 +37,8 @@ export default abstract class GameNode implements Positioned, Unique, Updateable
 	frozen: boolean = false;
 	onGround: boolean = false;
 	onWall: boolean = false;
+	onLeftSide: boolean = false;
+	onRightSide: boolean = false;
 	onCeiling: boolean = false;
 	active: boolean = false;
 	collisionShape: Shape;
@@ -194,6 +196,8 @@ export default abstract class GameNode implements Positioned, Unique, Updateable
 		this.moving = false;
 		this.onGround = false;
 		this.onWall = false;
+		this.onLeftSide = false;
+		this.onRightSide = false;
 		this.onCeiling = false;
 		this.active = true;
 		this.isCollidable = isCollidable;
