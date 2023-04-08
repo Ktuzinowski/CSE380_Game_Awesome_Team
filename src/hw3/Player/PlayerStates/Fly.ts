@@ -1,30 +1,33 @@
 import GameEvent from "../../../Wolfie2D/Events/GameEvent";
 import { GameEventType } from "../../../Wolfie2D/Events/GameEventType";
 import { PlayerStates, PlayerTweens } from "../PlayerController";
+import Input from "../../../Wolfie2D/Input/Input";
+import { HW3Controls } from "../../HW3Controls";
+import Timer from "../../../Wolfie2D/Timing/Timer";
 
 import PlayerState from "./PlayerState";
 
-export default class Jump extends PlayerState {
-
+export default class Fly extends PlayerState {
 	public onEnter(options: Record<string, any>): void {
         let scene = this.owner.getScene()
-
+        
         // Give the player a burst of upward momentum
-        this.parent.velocity.y = -200;
-
-        // If the player is moving to the left or right, make them do a flip
-        if(this.parent.velocity.x !== 0){
-            this.owner.tweens.play(PlayerTweens.FLIP);
+        if(this.parent.fuel !== 0) {
+            
+        this.parent.fuel -= 1;
+        console.log(this.parent.fuel + "This is the fuel");
+        this.parent.velocity.y += -15;
         }
-
-        // Play the jump sound for the player
-		this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: scene.getJumpAudioKey(), loop: false, holdReference: false});
+        // Play the eventual fly sound for the player
+		//this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: scene.getJumpAudioKey(), loop: false, holdReference: false});
 	}
 
 	public update(deltaT: number): void {
         // Update the direction the player is facing
         super.update(deltaT);
-
+        if(Input.isPressed(HW3Controls.FLY)) {
+            this.finished(PlayerStates.FLY);
+        }
         // If the player hit the ground, start idling
         if (this.owner.onGround) {
 			this.finished(PlayerStates.IDLE);
@@ -33,6 +36,7 @@ export default class Jump extends PlayerState {
         else if(this.owner.onCeiling || this.parent.velocity.y >= 0){
             this.finished(PlayerStates.FALL);
 		}
+        
         
         // Otherwise move the player
         else {

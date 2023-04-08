@@ -30,7 +30,8 @@ export default class PlayerController extends ControllerAI {
         // Get last velocity and override x
         const velocity = this.owner.getLastVelocity();
         velocity.x = x * 100 * deltaT;
-
+        
+        
         // Check for jump condition
         if(this.owner.onGround && Input.isJustPressed("jump")){
             // We are jumping
@@ -41,10 +42,14 @@ export default class PlayerController extends ControllerAI {
 
             // Play the jump sound
             this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.jumpSoundKey, loop: false});
-        } else {
+        } 
+        else {
             velocity.y += 10*deltaT;
         }
-
+        if(Input.isPressed("fly")) {
+            velocity.y = -100 * deltaT;
+            //should play flying animation with jetpack later
+        }
         if(this.owner.onGround && !Input.isJustPressed("jump")){
             // If we're on the ground, but aren't jumping, show walk animation
             if(velocity.x === 0){

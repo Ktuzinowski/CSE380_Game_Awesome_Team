@@ -61,7 +61,9 @@ export default abstract class HW3Level extends Scene {
 	private healthBar: Label;
 	private healthBarBg: Label;
 
-
+    private jetpackLabel: Label;
+    private jetpack: Label;
+    private jetpackBg: Label;
     /** The end of level stuff */
 
     protected levelEndPosition: Vec2;
@@ -72,6 +74,7 @@ export default abstract class HW3Level extends Scene {
     protected levelEndTimer: Timer;
     protected levelEndLabel: Label;
 
+    
     // Level end transition timer and graphic
     protected levelTransitionTimer: Timer;
     protected levelTransitionScreen: Rect;
@@ -139,6 +142,9 @@ export default abstract class HW3Level extends Scene {
             this.levelTransitionScreen.tweens.play("fadeIn");
         });
 
+
+        
+
         // Initially disable player movement
         Input.disableInput();
 
@@ -187,6 +193,12 @@ export default abstract class HW3Level extends Scene {
                 this.handleHealthChange(event.data.get("curhp"), event.data.get("maxhp"));
                 break;
             }
+            case HW3Events.FUEL_CHANGE: {
+                console.log(event.data.get("curfuel") + "i get here")
+                this.handleJetpackChange(event.data.get("curfuel"), event.data.get("maxfuel"));
+                break;
+            }
+            
             case HW3Events.PLAYER_DEAD: {
                 this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: this.levelMusicKey});
                 this.sceneManager.changeToScene(MainMenu);
@@ -271,6 +283,18 @@ export default abstract class HW3Level extends Scene {
 		this.healthBar.backgroundColor = currentHealth < maxHealth * 1/4 ? Color.RED: currentHealth < maxHealth * 3/4 ? Color.YELLOW : Color.GREEN;
 	}
 
+
+
+
+    protected handleJetpackChange(currentFuel: number, maxFuel: number): void {
+        /// need to implement
+        console.log("thiofjeoiwfjaw0o9faj")
+        let unit = this.jetpackBg.size.x/ maxFuel;
+        this.jetpack.size.set(this.jetpackBg.size.x - unit * (maxFuel - currentFuel), this.jetpackBg.size.y);
+        this.jetpack.position.set(this.jetpackBg.position.x - (unit / 2 / this.getViewScale()) * (maxFuel - currentFuel), this.jetpackBg.position.y);
+        this.jetpack.backgroundColor = currentFuel < maxFuel * 1/4 ? Color.BLACK: currentFuel < maxFuel * 3/4 ? Color.YELLOW: Color.ORANGE;
+        console.log(this.jetpack.backgroundColor)
+    }
     /* Initialization methods for everything in the scene */
 
     /**
@@ -303,9 +327,9 @@ export default abstract class HW3Level extends Scene {
         this.destructable = this.getTilemap(this.destructibleLayerKey) as OrthogonalTilemap;
 
         // Add physics to the destructible layer of the tilemap
-        this.destructable.addPhysics();
-        this.destructable.setGroup(HW3PhysicsGroups.DESTRUCTABLE);
-        this.destructable.setTrigger(HW3PhysicsGroups.PLAYER_WEAPON, HW3Events.PARTICLE_HIT_DESTRUCTIBLE, null);
+        ///this.destructable.addPhysics();
+        //this.destructable.setGroup(HW3PhysicsGroups.DESTRUCTABLE);
+        //this.destructable.setTrigger(HW3PhysicsGroups.PLAYER_WEAPON, HW3Events.PARTICLE_HIT_DESTRUCTIBLE, null);
     }
     /**
      * Handles all subscriptions to events
@@ -317,6 +341,7 @@ export default abstract class HW3Level extends Scene {
         this.receiver.subscribe(HW3Events.PARTICLE_HIT_DESTRUCTIBLE);
         this.receiver.subscribe(HW3Events.HEALTH_CHANGE);
         this.receiver.subscribe(HW3Events.PLAYER_DEAD);
+        this.receiver.subscribe(HW3Events.FUEL_CHANGE);
     }
     /**
      * Adds in any necessary UI to the game
@@ -338,6 +363,23 @@ export default abstract class HW3Level extends Scene {
 		this.healthBarBg = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(250, 20), text: ""});
 		this.healthBarBg.size = new Vec2(300, 25);
 		this.healthBarBg.borderColor = Color.BLACK;
+        
+        //jetpack label
+		this.jetpackLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(205, 30), text: "Fuel "});
+		this.jetpackLabel.size.set(300, 30);
+		this.jetpackLabel.fontSize = 24;
+		this.jetpackLabel.font = "Courier";
+
+        // jetpack
+		this.jetpack = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(250, 30), text: ""});
+		this.jetpack.size = new Vec2(300, 25);
+		this.jetpack.backgroundColor = Color.ORANGE;
+        
+        // jetpack Border
+		this.jetpackBg = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(250, 30), text: ""});
+		this.jetpackBg.size = new Vec2(300, 25);
+		this.jetpackBg.borderColor = Color.BLACK;
+
 
         // End of level label (start off screen)
         this.levelEndLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, { position: new Vec2(-300, 100), text: "Level Complete" });

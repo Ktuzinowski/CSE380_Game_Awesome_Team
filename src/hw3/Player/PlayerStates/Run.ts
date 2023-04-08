@@ -25,6 +25,9 @@ export default class Walk extends PlayerState {
         else if (Input.isJustPressed(HW3Controls.JUMP)) {
             this.finished(PlayerStates.JUMP);
         } 
+        else if(this.parent.fuel !==0 && Input.isPressed(HW3Controls.FLY)) {
+            this.finished(PlayerStates.FLY);
+        }
         // If the player is not on the ground, transition to the fall state
         else if (!this.owner.onGround && this.parent.velocity.y !== 0) {
             this.finished(PlayerStates.FALL);

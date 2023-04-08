@@ -6,7 +6,7 @@ import Fall from "./PlayerStates/Fall";
 import Idle from "./PlayerStates/Idle";
 import Jump from "./PlayerStates/Jump";
 import Run from "./PlayerStates/Run";
-
+import Fly from "./PlayerStates/Fly";
 import PlayerWeapon from "./PlayerWeapon";
 import Input from "../../Wolfie2D/Input/Input";
 
@@ -15,6 +15,7 @@ import HW3AnimatedSprite from "../Nodes/HW3AnimatedSprite";
 import MathUtils from "../../Wolfie2D/Utils/MathUtils";
 import { HW3Events } from "../HW3Events";
 import Dead from "./PlayerStates/Dead";
+import Timer from "../../Wolfie2D/Timing/Timer";
 
 /**
  * Animation keys for the player spritesheet
@@ -42,6 +43,7 @@ export const PlayerStates = {
 	JUMP: "JUMP",
     FALL: "FALL",
     DEAD: "DEAD",
+    FLY: "FLY",
 } as const
 
 /**
@@ -54,7 +56,10 @@ export default class PlayerController extends StateMachineAI {
     /** Health and max health for the player */
     protected _health: number;
     protected _maxHealth: number;
-
+    protected _fuel: number;
+    protected _maxFuel: number;
+    
+    protected fuelTimer: Timer;
     /** The players game node */
     protected owner: HW3AnimatedSprite;
 
@@ -77,15 +82,22 @@ export default class PlayerController extends StateMachineAI {
 
         this.health = 10
         this.maxHealth = 10;
-
+        this.fuel = 100
+        this.maxFuel = 100;
         // Add the different states the player can be in to the PlayerController 
 		this.addState(PlayerStates.IDLE, new Idle(this, this.owner));
 		this.addState(PlayerStates.RUN, new Run(this, this.owner));
         this.addState(PlayerStates.JUMP, new Jump(this, this.owner));
         this.addState(PlayerStates.FALL, new Fall(this, this.owner));
         this.addState(PlayerStates.DEAD, new Dead(this, this.owner));
-        
+        this.addState(PlayerStates.FLY, new Fly(this, this.owner));
         // Start the player in the Idle state
+
+        this.fuelTimer = new Timer(500, () => {
+            this.fuel +=1;
+            console.log(this.fuel + "fuel should be regenerating?")
+        },true);
+        this.fuelTimer.start();
         this.initialize(PlayerStates.IDLE);
     }
 
@@ -110,13 +122,14 @@ export default class PlayerController extends StateMachineAI {
         this.weapon.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
 
         // If the player hits the attack button and the weapon system isn't running, restart the system and fire!
+        /*
         if (Input.isPressed(HW3Controls.ATTACK) && !this.weapon.isSystemRunning()) {
             // Update the rotation to apply the particles velocity vector
             this.weapon.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
             // Start the particle system at the player's current position
             this.weapon.startSystem(500, 0, this.owner.position);
         }
-
+        */
         /*
             This if-statement will place a tile wherever the user clicks on the screen. I have
             left this here to make traversing the map a little easier, incase you accidently
@@ -144,5 +157,15 @@ export default class PlayerController extends StateMachineAI {
         this.emitter.fireEvent(HW3Events.HEALTH_CHANGE, {curhp: this.health, maxhp: this.maxHealth});
         // If the health hit 0, change the state of the player
         if (this.health === 0) { this.changeState(PlayerStates.DEAD); }
+    }
+    public get maxFuel(): number { return this._maxFuel; }
+    public set maxFuel(maxFuel: number) { this._maxFuel = maxFuel; }
+
+    public get fuel(): number { return this._fuel; }
+    public set fuel(fuel: number) { 
+        console.log("COME HERE NOW")
+        this._fuel = MathUtils.clamp(fuel, 0, this.maxFuel);
+        console.log(this._fuel)
+        this.emitter.fireEvent(HW3Events.FUEL_CHANGE, {curfuel: this.fuel, maxfuel: this.maxFuel});
     }
 }

@@ -7,19 +7,18 @@ import Viewport from "../../Wolfie2D/SceneGraph/Viewport";
 import RenderingManager from "../../Wolfie2D/Rendering/RenderingManager";
 import SceneManager from "../../Wolfie2D/Scene/SceneManager";
 import Level1 from "./HW3Level1";
-import JoeLevel1 from "./JoeLevel1";
 
 /**
  * The second level for HW4. It should be the goose dungeon / cave.
  */
-export default class Level2 extends HW3Level {
+export default class JoeLevel2 extends HW3Level {
 
-    public static readonly PLAYER_SPAWN = new Vec2(52, 420);
+    public static readonly PLAYER_SPAWN = new Vec2(90, 32);
     public static readonly PLAYER_SPRITE_KEY = "PLAYER_SPRITE_KEY";
     public static readonly PLAYER_SPRITE_PATH = "hw4_assets/spritesheets/Hero.json";
 
-    public static readonly TILEMAP_KEY = "LEVEL2";
-    public static readonly TILEMAP_PATH = "hw4_assets/tilemaps/HW4Level2.json";
+    public static readonly TILEMAP_KEY = "LEVEL1";
+    public static readonly TILEMAP_PATH = "hw4_assets/tilemaps/JoeLevel2.json";
     public static readonly TILEMAP_SCALE = new Vec2(2, 2);
     public static readonly DESTRUCTIBLE_LAYER_KEY = "Destructable";
     public static readonly WALLS_LAYER_KEY = "Main";
@@ -39,15 +38,15 @@ export default class Level2 extends HW3Level {
         super(viewport, sceneManager, renderingManager, options);
 
         // Set the keys for the different layers of the tilemap
-        this.tilemapKey = Level2.TILEMAP_KEY;
-        this.tilemapScale = Level2.TILEMAP_SCALE;
-        this.destructibleLayerKey = Level2.DESTRUCTIBLE_LAYER_KEY;
-        this.wallsLayerKey = Level2.WALLS_LAYER_KEY;
+        this.tilemapKey = JoeLevel2.TILEMAP_KEY;
+        this.tilemapScale = JoeLevel2.TILEMAP_SCALE;
+        this.destructibleLayerKey = JoeLevel2.DESTRUCTIBLE_LAYER_KEY;
+        this.wallsLayerKey = JoeLevel2.WALLS_LAYER_KEY;
 
         // Set the key for the player's sprite
         this.playerSpriteKey = Level1.PLAYER_SPRITE_KEY;
         // Set the player's spawn
-        this.playerSpawn = Level2.PLAYER_SPAWN;
+        this.playerSpawn = JoeLevel2.PLAYER_SPAWN;
 
         // Music and sound
         this.levelMusicKey = Level1.LEVEL_MUSIC_KEY
@@ -64,12 +63,16 @@ export default class Level2 extends HW3Level {
      */
     public loadScene(): void {
         // Load in the tilemap
-        this.load.tilemap(this.tilemapKey, Level2.TILEMAP_PATH);
+        this.load.tilemap(this.tilemapKey, JoeLevel2.TILEMAP_PATH);
     }
 
     public startScene(): void {
         super.startScene();
-        this.nextLevel = JoeLevel1;
+        this.nextLevel = MainMenu;
     }
 
+    protected initializeViewport(): void {
+        super.initializeViewport();
+        this.viewport.setBounds(16, 16, 1600, 1600);
+    }
 }
