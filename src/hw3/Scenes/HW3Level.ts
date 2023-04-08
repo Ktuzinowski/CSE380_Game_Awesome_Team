@@ -339,12 +339,18 @@ export default abstract class HW3Level extends Scene {
         // this.destructable.addPhysics();
         // this.destructable.setGroup(HW3PhysicsGroups.DESTRUCTABLE);
         // this.destructable.setTrigger(HW3PhysicsGroups.PLAYER_WEAPON, HW3Events.PARTICLE_HIT_DESTRUCTIBLE, null);
+        console.log(this.walls);
+        console.log(this.painfulSlimes);
+        if(this.painfulSlimes !== null) {
+            
         this.painfulSlimes.setGroup(HW3PhysicsGroups.PAINFUL)
         this.painfulSlimes.addPhysics()
-        this.sleepingSlimes.setGroup(HW3PhysicsGroups.BOUNCABLE)
-        this.sleepingSlimes.addPhysics()
+        
         // bouncing on painful slimes
         this.painfulSlimes.setTrigger(HW3PhysicsGroups.PLAYER, HW3Events.BOUNCED_ON_PAIN, null)
+        }
+        this.sleepingSlimes.setGroup(HW3PhysicsGroups.BOUNCABLE)
+        this.sleepingSlimes.addPhysics()
         // bouncing on sleepy slimes
         this.sleepingSlimes.setTrigger(HW3PhysicsGroups.PLAYER, HW3Events.BOUNCED_ON_SLIME, null)
     }

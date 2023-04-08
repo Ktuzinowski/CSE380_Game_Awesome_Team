@@ -14,7 +14,7 @@ import JoeLevel2 from "./JoeLevel2";
  */
 export default class JoeLevel1 extends HW3Level {
 
-    public static readonly PLAYER_SPAWN = new Vec2(90, 1500);
+    public static readonly PLAYER_SPAWN = new Vec2(90, 1540);
     public static readonly PLAYER_SPRITE_KEY = "PLAYER_SPRITE_KEY";
     public static readonly PLAYER_SPRITE_PATH = "hw4_assets/spritesheets/Hero.json";
 
@@ -23,7 +23,9 @@ export default class JoeLevel1 extends HW3Level {
     public static readonly TILEMAP_SCALE = new Vec2(2, 2);
     public static readonly DESTRUCTIBLE_LAYER_KEY = "Destructable";
     public static readonly WALLS_LAYER_KEY = "Main";
-
+    
+    public static readonly SLEEPING_SLIMES_LAYER_KEY = "Sleeping Slimes"
+    public static readonly PAINFUL_SLIMES_LAYER_KEY = "Painful Slimes"
     public static readonly LEVEL_MUSIC_KEY = "LEVEL_MUSIC";
     public static readonly LEVEL_MUSIC_PATH = "hw4_assets/music/hw5_level_music.wav";
 
@@ -44,6 +46,9 @@ export default class JoeLevel1 extends HW3Level {
         this.destructibleLayerKey = JoeLevel1.DESTRUCTIBLE_LAYER_KEY;
         this.wallsLayerKey = JoeLevel1.WALLS_LAYER_KEY;
 
+        this.sleepingSlimesLayerKey = JoeLevel1.SLEEPING_SLIMES_LAYER_KEY;
+        this.painfulSlimesLayerKey = JoeLevel1.PAINFUL_SLIMES_LAYER_KEY;
+        
         // Set the key for the player's sprite
         this.playerSpriteKey = Level1.PLAYER_SPRITE_KEY;
         // Set the player's spawn

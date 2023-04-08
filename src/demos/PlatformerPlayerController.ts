@@ -33,6 +33,7 @@ export default class PlayerController extends ControllerAI {
         
         
         // Check for jump condition
+        /*
         if(this.owner.onGround && Input.isJustPressed("jump")){
             // We are jumping
             velocity.y = -250*deltaT;
@@ -45,9 +46,9 @@ export default class PlayerController extends ControllerAI {
         } 
         else {
             velocity.y += 10*deltaT;
-        }
+        }*/
         if(Input.isPressed("fly")) {
-            velocity.y = -100 * deltaT;
+            //velocity.y = -100 * deltaT;
             //should play flying animation with jetpack later
         }
         if(this.owner.onGround && !Input.isJustPressed("jump")){
