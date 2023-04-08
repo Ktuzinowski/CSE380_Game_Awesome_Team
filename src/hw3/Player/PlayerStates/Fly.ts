@@ -9,14 +9,12 @@ import PlayerState from "./PlayerState";
 
 export default class Fly extends PlayerState {
 	public onEnter(options: Record<string, any>): void {
-        let scene = this.owner.getScene()
         
         // Give the player a burst of upward momentum
         if(this.parent.fuel !== 0) {
             
         this.parent.fuel -= 1;
-        console.log(this.parent.fuel + "This is the fuel");
-        this.parent.velocity.y += -15;
+        this.parent.velocity.y += -20;
         }
         // Play the eventual fly sound for the player
 		//this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: scene.getJumpAudioKey(), loop: false, holdReference: false});
@@ -34,7 +32,7 @@ export default class Fly extends PlayerState {
 		} 
         // If the player hit the ceiling or their velocity is >= to zero, 
         else if(this.owner.onCeiling || this.parent.velocity.y >= 0){
-            this.finished(PlayerStates.FALL);
+            this.finished(PlayerStates.AIRBORNE);
 		}
         
         

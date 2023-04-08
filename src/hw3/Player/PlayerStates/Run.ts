@@ -6,6 +6,7 @@ import PlayerState from "./PlayerState";
 export default class Walk extends PlayerState {
 
 	onEnter(options: Record<string, any>): void {
+        console.log("ENTERING RUN")
 		this.parent.speed = this.parent.MIN_SPEED;
         this.owner.animation.playIfNotAlready(PlayerAnimations.WALK);
 	}
@@ -22,15 +23,12 @@ export default class Walk extends PlayerState {
 			this.finished(PlayerStates.IDLE);
 		} 
         // If the player hits the jump key - transition to the Jump state
-        else if (Input.isJustPressed(HW3Controls.JUMP)) {
-            this.finished(PlayerStates.JUMP);
-        } 
         else if(this.parent.fuel !==0 && Input.isPressed(HW3Controls.FLY)) {
             this.finished(PlayerStates.FLY);
         }
         // If the player is not on the ground, transition to the fall state
         else if (!this.owner.onGround && this.parent.velocity.y !== 0) {
-            this.finished(PlayerStates.FALL);
+            this.finished(PlayerStates.AIRBORNE);
         }
         // Otherwise, move the player
         else {

@@ -2,9 +2,8 @@ import StateMachineAI from "../../Wolfie2D/AI/StateMachineAI";
 import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 import OrthogonalTilemap from "../../Wolfie2D/Nodes/Tilemaps/OrthogonalTilemap";
 
-import Fall from "./PlayerStates/Fall";
+import Airborne from "./PlayerStates/Airborne";
 import Idle from "./PlayerStates/Idle";
-import Jump from "./PlayerStates/Jump";
 import Run from "./PlayerStates/Run";
 import Fly from "./PlayerStates/Fly";
 import PlayerWeapon from "./PlayerWeapon";
@@ -15,7 +14,8 @@ import HW3AnimatedSprite from "../Nodes/HW3AnimatedSprite";
 import MathUtils from "../../Wolfie2D/Utils/MathUtils";
 import { HW3Events } from "../HW3Events";
 import Dead from "./PlayerStates/Dead";
-import Timer from "../../Wolfie2D/Timing/Timer";
+import GameEvent from "../../Wolfie2D/Events/GameEvent";
+import Timer, { TimerState } from "../../Wolfie2D/Timing/Timer";
 
 /**
  * Animation keys for the player spritesheet
@@ -44,6 +44,8 @@ export const PlayerStates = {
     FALL: "FALL",
     DEAD: "DEAD",
     FLY: "FLY",
+    AIRBORNE: "Airborne",
+    BOUNCESLIME: "BOUNCESLIME"
 } as const
 
 /**
@@ -70,6 +72,11 @@ export default class PlayerController extends StateMachineAI {
     // protected cannon: Sprite;
     protected weapon: PlayerWeapon;
 
+    protected deltaT: number = 0;
+    protected slimeBounceTimer: Timer = new Timer(100, () => {
+        console.log("Finished bounce")
+    })
+
     
     public initializeAI(owner: HW3AnimatedSprite, options: Record<string, any>){
         this.owner = owner;
@@ -87,15 +94,17 @@ export default class PlayerController extends StateMachineAI {
         // Add the different states the player can be in to the PlayerController 
 		this.addState(PlayerStates.IDLE, new Idle(this, this.owner));
 		this.addState(PlayerStates.RUN, new Run(this, this.owner));
-        this.addState(PlayerStates.JUMP, new Jump(this, this.owner));
-        this.addState(PlayerStates.FALL, new Fall(this, this.owner));
         this.addState(PlayerStates.DEAD, new Dead(this, this.owner));
         this.addState(PlayerStates.FLY, new Fly(this, this.owner));
+        this.addState(PlayerStates.AIRBORNE, new Airborne(this, this.owner));
+        // this is the parent, this.owner is the owner, use for updating based on events
+
+        this.receiver.subscribe(HW3Events.BOUNCED_ON_PAIN) // bounce on pain
+        this.receiver.subscribe(HW3Events.BOUNCED_ON_SLIME) // bounce on slime
         // Start the player in the Idle state
 
         this.fuelTimer = new Timer(500, () => {
             this.fuel +=1;
-            console.log(this.fuel + "fuel should be regenerating?")
         },true);
         this.fuelTimer.start();
         this.initialize(PlayerStates.IDLE);
@@ -117,6 +126,7 @@ export default class PlayerController extends StateMachineAI {
 
     public update(deltaT: number): void {
 		super.update(deltaT);
+        this.deltaT = deltaT;
 
         // Update the rotation to apply the particles velocity vector
         this.weapon.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
@@ -138,8 +148,43 @@ export default class PlayerController extends StateMachineAI {
         if (Input.isMousePressed()) {
             this.tilemap.setTileAtRowCol(this.tilemap.getColRowAt(Input.getGlobalMousePosition()),5);
         }
-
+        while (this.receiver.hasNextEvent()) {
+            this.handleEvent(this.receiver.getNextEvent());
+        }
 	}
+
+    /**
+     * Handle game events. 
+     * @param event the game event
+     */
+    public handleEvent(event: GameEvent): void {
+        switch (event.type) {
+            case HW3Events.BOUNCED_ON_PAIN: {
+                console.log("This is painful...")
+                break;
+            }
+            case HW3Events.BOUNCED_ON_SLIME: {
+                console.log("This is bouncy...")
+                console.log(event.data.get("node"))
+                console.log(event.data.get("other"))
+                if (this.slimeBounceTimer.getCurrentStateOfTimer() === TimerState.ACTIVE) {
+                    return;
+                } else {
+                    this.slimeBounceTimer.reset();
+                    this.slimeBounceTimer.start();
+                }
+                this.velocity.y *= 2;
+                this.owner.move(this.velocity.scaled(this.deltaT));
+                break;
+            }
+            // Default: Throw an error! No unhandled events allowed.
+            default: {
+                throw new Error(`Unhandled event caught in scene with type ${event.type}`)
+            }
+        }
+    }
+
+
 
     public get velocity(): Vec2 { return this._velocity; }
     public set velocity(velocity: Vec2) { this._velocity = velocity; }
@@ -156,16 +201,13 @@ export default class PlayerController extends StateMachineAI {
         // When the health changes, fire an event up to the scene.
         this.emitter.fireEvent(HW3Events.HEALTH_CHANGE, {curhp: this.health, maxhp: this.maxHealth});
         // If the health hit 0, change the state of the player
-        if (this.health === 0) { this.changeState(PlayerStates.DEAD); }
     }
     public get maxFuel(): number { return this._maxFuel; }
     public set maxFuel(maxFuel: number) { this._maxFuel = maxFuel; }
 
     public get fuel(): number { return this._fuel; }
     public set fuel(fuel: number) { 
-        console.log("COME HERE NOW")
         this._fuel = MathUtils.clamp(fuel, 0, this.maxFuel);
-        console.log(this._fuel)
         this.emitter.fireEvent(HW3Events.FUEL_CHANGE, {curfuel: this.fuel, maxfuel: this.maxFuel});
     }
 }

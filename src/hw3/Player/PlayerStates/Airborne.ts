@@ -1,14 +1,15 @@
+import Input from "../../../Wolfie2D/Input/Input";
 import MathUtils from "../../../Wolfie2D/Utils/MathUtils";
+import { HW3Controls } from "../../HW3Controls";
 import { PlayerStates } from "../PlayerController";
 import PlayerState from "./PlayerState";
 
-import Input from "../../../Wolfie2D/Input/Input";
-import { HW3Controls } from "../../HW3Controls";
-export default class Fall extends PlayerState {
+export default class Airborne extends PlayerState {
 
     onEnter(options: Record<string, any>): void {
+        console.log("ENTERING AIRBORNE")
         // If we're falling, the vertical velocity should be >= 0
-        this.parent.velocity.y = 0;
+        
     }
 
     update(deltaT: number): void {
@@ -17,8 +18,12 @@ export default class Fall extends PlayerState {
         if (this.owner.onGround) {
             this.parent.health -= Math.floor(this.parent.velocity.y / 300);
             this.parent.fuel += 0;
-            this.finished(PlayerStates.IDLE);
+            if(this.parent.velocity.y < 50 && this.parent.velocity.y > -50)
+                this.finished(PlayerStates.IDLE)
+            else 
+                this.parent.velocity.y = this.prev.y * -1 * 0.6;
         } 
+        
         else if(this.parent.fuel !==0 && Input.isPressed(HW3Controls.FLY)) {
             this.finished(PlayerStates.FLY);
 
@@ -35,6 +40,8 @@ export default class Fall extends PlayerState {
             this.owner.move(this.parent.velocity.scaled(deltaT));
         }
 
+        this.prev = this.parent.velocity.clone();
+        // console.log(this.parent.velocity.y);
     }
 
     onExit(): Record<string, any> {

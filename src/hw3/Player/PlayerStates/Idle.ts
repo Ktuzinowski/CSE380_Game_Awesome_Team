@@ -6,7 +6,7 @@ import { HW3Controls } from "../../HW3Controls";
 export default class Idle extends PlayerState {
 
 	public onEnter(options: Record<string, any>): void {
-        console.log("YOOOOOOOOOOOOOOOOOOOOOO")
+        console.log("ENTERING IDLE")
         this.owner.animation.play(PlayerAnimations.IDLE);
 		this.parent.speed = this.parent.MIN_SPEED;
 
@@ -25,17 +25,13 @@ export default class Idle extends PlayerState {
 		if (!dir.isZero() && dir.y === 0){
 			this.finished(PlayerStates.RUN);
 		} 
-        // If the player is jumping, transition to the jumping state
-        else if (Input.isJustPressed(HW3Controls.JUMP)) {
-            this.finished(PlayerStates.JUMP);
-        }
         //if the player is flying, transition to fly state
         else if(this.parent.fuel !==0 && Input.isPressed(HW3Controls.FLY)) {
             this.finished(PlayerStates.FLY);
         }
         // If the player is not on the ground, transition to the falling state
         else if (!this.owner.onGround && this.parent.velocity.y > 0) {
-            this.finished(PlayerStates.FALL);
+            this.finished(PlayerStates.AIRBORNE);
         } else {
             // Update the vertical velocity of the player
             this.parent.velocity.y += this.gravity*deltaT;

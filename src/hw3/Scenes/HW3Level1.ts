@@ -11,14 +11,16 @@ import HW4Level2 from "./HW3Level2";
  */
 export default class Level1 extends HW3Level {
 
-    public static readonly PLAYER_SPAWN = new Vec2(90, 1500);
+    public static readonly PLAYER_SPAWN = new Vec2(32, 32);
     public static readonly PLAYER_SPRITE_KEY = "PLAYER_SPRITE_KEY";
     public static readonly PLAYER_SPRITE_PATH = "hw4_assets/spritesheets/Hero.json";
 
     public static readonly TILEMAP_KEY = "LEVEL1";
-    public static readonly TILEMAP_PATH = "hw4_assets/tilemaps/JoeLevel1.json";
+    public static readonly TILEMAP_PATH = "hw4_assets/tilemaps/KevinLevelOne.json";
     public static readonly TILEMAP_SCALE = new Vec2(2, 2);
     public static readonly DESTRUCTIBLE_LAYER_KEY = "Destructable";
+    public static readonly SLEEPING_SLIMES_LAYER_KEY = "Sleeping Slimes"
+    public static readonly PAINFUL_SLIMES_LAYER_KEY = "Painful Slimes"
     public static readonly WALLS_LAYER_KEY = "Main";
 
     public static readonly LEVEL_MUSIC_KEY = "LEVEL_MUSIC";
@@ -39,6 +41,8 @@ export default class Level1 extends HW3Level {
         this.tilemapKey = Level1.TILEMAP_KEY;
         this.tilemapScale = Level1.TILEMAP_SCALE;
         this.destructibleLayerKey = Level1.DESTRUCTIBLE_LAYER_KEY;
+        this.sleepingSlimesLayerKey = Level1.SLEEPING_SLIMES_LAYER_KEY;
+        this.painfulSlimesLayerKey = Level1.PAINFUL_SLIMES_LAYER_KEY;
         this.wallsLayerKey = Level1.WALLS_LAYER_KEY;
 
         // Set the key for the player's sprite
@@ -94,7 +98,7 @@ export default class Level1 extends HW3Level {
      */
     protected initializeViewport(): void {
         super.initializeViewport();
-        this.viewport.setBounds(16, 16, 800, 1600);
+        this.viewport.setBounds(16, 16, 1000, 1600);
     }
 
 }
