@@ -21,6 +21,12 @@ export const HW3Events = {
     PARTICLE_HIT_DESTRUCTIBLE: "PARTICLE_HIT_DESTRUCTIBLE",
 
     // The event sent when the player dies. Gets sent after the player's death animation
-    PLAYER_DEAD: "PLAYER_DEAD"
+    PLAYER_DEAD: "PLAYER_DEAD",
+
+    // Player bounced on top of a slime
+    BOUNCED_ON_SLIME: "BOUNCED_ON_SLIME",
+
+    // Player bounced on Painful Slime
+    BOUNCED_ON_PAIN: "BOUNCED_ON_PAIN"
     
 } as const;

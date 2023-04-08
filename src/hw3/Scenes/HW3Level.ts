@@ -79,11 +79,17 @@ export default abstract class HW3Level extends Scene {
     /** The keys to the tilemap and different tilemap layers */
     protected tilemapKey: string;
     protected destructibleLayerKey: string;
+    protected sleepingSlimesLayerKey: string;
+    protected painfulSlimesLayerKey: string;
     protected wallsLayerKey: string;
     /** The scale for the tilemap */
     protected tilemapScale: Vec2;
     /** The destrubtable layer of the tilemap */
     protected destructable: OrthogonalTilemap;
+    /** The Sleeping Slimes layer of the tilemap */
+    protected sleepingSlimes: OrthogonalTilemap;
+    /** The Painful Slimes layer of the tilemap */
+    protected painfulSlimes: OrthogonalTilemap;
     /** The wall layer of the tilemap */
     protected walls: OrthogonalTilemap;
 
@@ -98,7 +104,7 @@ export default abstract class HW3Level extends Scene {
                 HW3PhysicsGroups.GROUND, 
                 HW3PhysicsGroups.PLAYER, 
                 HW3PhysicsGroups.PLAYER_WEAPON, 
-                HW3PhysicsGroups.DESTRUCTABLE
+                HW3PhysicsGroups.DESTRUCTABLE,
             ],
             collisions:
             [
@@ -296,16 +302,29 @@ export default abstract class HW3Level extends Scene {
 
         if (this.destructibleLayerKey === undefined || this.wallsLayerKey === undefined) {
             throw new Error("Make sure the keys for the destuctible layer and wall layer are both set");
+        } else if (this.sleepingSlimesLayerKey === undefined || this.painfulSlimesLayerKey === undefined) {
+            throw new Error("Make sure the keys for the Sleeping Slimes layer and Painful Slimes layer are both set")
         }
 
         // Get the wall and destructible layers 
         this.walls = this.getTilemap(this.wallsLayerKey) as OrthogonalTilemap;
         this.destructable = this.getTilemap(this.destructibleLayerKey) as OrthogonalTilemap;
+        this.sleepingSlimes = this.getTilemap(this.sleepingSlimesLayerKey) as OrthogonalTilemap;
+        this.painfulSlimes = this.getTilemap(this.painfulSlimesLayerKey) as OrthogonalTilemap;
+
 
         // Add physics to the destructible layer of the tilemap
         // this.destructable.addPhysics();
         // this.destructable.setGroup(HW3PhysicsGroups.DESTRUCTABLE);
         // this.destructable.setTrigger(HW3PhysicsGroups.PLAYER_WEAPON, HW3Events.PARTICLE_HIT_DESTRUCTIBLE, null);
+        this.painfulSlimes.setGroup(HW3PhysicsGroups.PAINFUL)
+        this.painfulSlimes.addPhysics()
+        this.sleepingSlimes.setGroup(HW3PhysicsGroups.BOUNCABLE)
+        this.sleepingSlimes.addPhysics()
+        // bouncing on painful slimes
+        this.painfulSlimes.setTrigger(HW3PhysicsGroups.PLAYER, HW3Events.BOUNCED_ON_PAIN, null)
+        // bouncing on sleepy slimes
+        this.sleepingSlimes.setTrigger(HW3PhysicsGroups.PLAYER, HW3Events.BOUNCED_ON_SLIME, null)
     }
     /**
      * Handles all subscriptions to events

@@ -32,7 +32,7 @@ export default class Airborne extends PlayerState {
         }
 
         this.prev = this.parent.velocity.clone();
-        console.log(this.parent.velocity.y);
+        // console.log(this.parent.velocity.y);
     }
 
     onExit(): Record<string, any> {
