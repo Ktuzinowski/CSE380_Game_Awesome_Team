@@ -1,13 +1,14 @@
 import Input from "../../../Wolfie2D/Input/Input";
 import MathUtils from "../../../Wolfie2D/Utils/MathUtils";
 import { HW3Controls } from "../../HW3Controls";
-import { PlayerStates } from "../PlayerController";
+import { PlayerAnimations, PlayerStates } from "../PlayerController";
 import PlayerState from "./PlayerState";
 
 export default class Airborne extends PlayerState {
 
     onEnter(options: Record<string, any>): void {
         console.log("ENTERING AIRBORNE")
+        this.owner.animation.playIfNotAlready(PlayerAnimations.FLY);
         console.log(this.parent.velocity.y)
         // If we're falling, the vertical velocity should be >= 0
         

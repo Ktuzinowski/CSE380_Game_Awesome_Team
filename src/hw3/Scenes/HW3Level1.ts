@@ -11,12 +11,12 @@ import HW4Level2 from "./HW3Level2";
  */
 export default class Level1 extends HW3Level {
 
-    public static readonly PLAYER_SPAWN = new Vec2(90, 1576);
+    public static readonly PLAYER_SPAWN = new Vec2(32,32);
     public static readonly PLAYER_SPRITE_KEY = "PLAYER_SPRITE_KEY";
-    public static readonly PLAYER_SPRITE_PATH = "hw4_assets/spritesheets/Hero.json";
+    public static readonly PLAYER_SPRITE_PATH = "hw4_assets/spritesheets/Intern.json";
 
     public static readonly TILEMAP_KEY = "LEVEL1";
-    public static readonly TILEMAP_PATH = "hw4_assets/tilemaps/JoeLevel1.json";
+    public static readonly TILEMAP_PATH = "hw4_assets/tilemaps/KevinLevelOne.json";
     public static readonly TILEMAP_SCALE = new Vec2(2, 2);
     public static readonly DESTRUCTIBLE_LAYER_KEY = "Destructable";
     public static readonly SLEEPING_SLIMES_LAYER_KEY = "Sleeping Slimes"

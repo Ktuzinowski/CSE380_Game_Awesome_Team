@@ -1,6 +1,6 @@
 import GameEvent from "../../../Wolfie2D/Events/GameEvent";
 import { GameEventType } from "../../../Wolfie2D/Events/GameEventType";
-import { PlayerStates, PlayerTweens } from "../PlayerController";
+import { PlayerAnimations, PlayerStates, PlayerTweens } from "../PlayerController";
 import Input from "../../../Wolfie2D/Input/Input";
 import { HW3Controls } from "../../HW3Controls";
 import Timer from "../../../Wolfie2D/Timing/Timer";
@@ -10,6 +10,7 @@ import PlayerState from "./PlayerState";
 export default class Fly extends PlayerState {
 	public onEnter(options: Record<string, any>): void {
         console.log("ENTERING FLY")
+        this.owner.animation.playIfNotAlready(PlayerAnimations.FLY);
         // Give the player a burst of upward momentum
         if(this.parent.fuel !== 0) {
             

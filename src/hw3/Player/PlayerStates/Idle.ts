@@ -7,7 +7,7 @@ export default class Idle extends PlayerState {
 
 	public onEnter(options: Record<string, any>): void {
         console.log("ENTERING IDLE")
-        this.owner.animation.play(PlayerAnimations.IDLE);
+        this.owner.animation.play(PlayerAnimations.IDLE, true);
 		this.parent.speed = this.parent.MIN_SPEED;
 
         this.parent.velocity.x = 0;
