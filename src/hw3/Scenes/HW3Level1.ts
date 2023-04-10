@@ -4,14 +4,14 @@ import HW3Level from "./HW3Level";
 import RenderingManager from "../../Wolfie2D/Rendering/RenderingManager";
 import SceneManager from "../../Wolfie2D/Scene/SceneManager";
 import Viewport from "../../Wolfie2D/SceneGraph/Viewport";
-import HW4Level2 from "./HW3Level2";
+import JoeLevel1 from "./JoeLevel1";
 
 /**
  * The first level for HW4 - should be the one with the grass and the clouds.
  */
 export default class Level1 extends HW3Level {
 
-    public static readonly PLAYER_SPAWN = new Vec2(32,32);
+    public static readonly PLAYER_SPAWN = new Vec2(64,1496);
     public static readonly PLAYER_SPRITE_KEY = "PLAYER_SPRITE_KEY";
     public static readonly PLAYER_SPRITE_PATH = "hw4_assets/spritesheets/Intern.json";
 
@@ -56,7 +56,7 @@ export default class Level1 extends HW3Level {
         this.tileDestroyedAudioKey = Level1.TILE_DESTROYED_KEY;
 
         // Level end size and position
-        this.levelEndPosition = new Vec2(32, 216).mult(this.tilemapScale);
+        this.levelEndPosition = new Vec2(64, 64).mult(this.tilemapScale);
         this.levelEndHalfSize = new Vec2(32, 32).mult(this.tilemapScale);
     }
 
@@ -87,7 +87,7 @@ export default class Level1 extends HW3Level {
     public startScene(): void {
         super.startScene();
         // Set the next level to be Level2
-        this.nextLevel = HW4Level2;
+        this.nextLevel = JoeLevel1;
     }
 
     /**
@@ -98,7 +98,7 @@ export default class Level1 extends HW3Level {
      */
     protected initializeViewport(): void {
         super.initializeViewport();
-        this.viewport.setBounds(16, 16, 800, 1600);
+        this.viewport.setBounds(16, 16, 1600, 1600);
     }
 
 }

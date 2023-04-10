@@ -8,6 +8,8 @@ import Layer from "../../Wolfie2D/Scene/Layer";
 import Scene from "../../Wolfie2D/Scene/Scene";
 import Color from "../../Wolfie2D/Utils/Color";
 import Level1 from "./HW3Level1";
+import JoeLevel1 from "./JoeLevel1";
+import JoeLevel2 from "./JoeLevel2";
 
 
 // Need to start adding layers
@@ -40,6 +42,7 @@ export default class MainMenu extends Scene {
     private levelsScreen: Layer;
     private cheatCodesScreen: Layer;
     private backstoryScreen: Layer;
+    private currenLevelNumber: number = 1;
     public static readonly MUSIC_KEY = "MAIN_MENU_MUSIC";
     public static readonly MUSIC_PATH = "hw4_assets/music/menu.mp3";
 
@@ -171,6 +174,9 @@ export default class MainMenu extends Scene {
         levelOne.setPadding(new Vec2(50, 10));
         levelOne.font = "PixelSimple";
         levelOne.onClickEventId = MainMenuEvent.PLAY_GAME;
+        levelOne.onClick = () => {
+            this.currenLevelNumber = 1;
+        }
 
         const levelTwo = <Button>this.add.uiElement(UIElementType.BUTTON, MainMenuLayer.LEVELS, {position: new Vec2(size.x, size.y + offsetYDirection), text: "LVL 2"});
         levelTwo.backgroundColor = Color.TRANSPARENT;
@@ -179,6 +185,9 @@ export default class MainMenu extends Scene {
         levelTwo.setPadding(new Vec2(50, 10));
         levelTwo.font = "PixelSimple";
         levelTwo.onClickEventId = MainMenuEvent.PLAY_GAME;
+        levelTwo.onClick = () => {
+            this.currenLevelNumber = 2;
+        }
 
         const level3 = <Button>this.add.uiElement(UIElementType.BUTTON, MainMenuLayer.LEVELS, {position: new Vec2(size.x + 300, size.y + offsetYDirection), text: "LVL 3"});
         level3.backgroundColor = Color.TRANSPARENT;
@@ -187,6 +196,9 @@ export default class MainMenu extends Scene {
         level3.setPadding(new Vec2(50, 10));
         level3.font = "PixelSimple";
         level3.onClickEventId = MainMenuEvent.PLAY_GAME;
+        level3.onClick = () => {
+            this.currenLevelNumber = 3;
+        }
 
         const level4 = <Button>this.add.uiElement(UIElementType.BUTTON, MainMenuLayer.LEVELS, {position: new Vec2(size.x - 300, size.y + 100 + offsetYDirection), text: "LVL 4"});
         level4.backgroundColor = Color.TRANSPARENT;
@@ -203,6 +215,9 @@ export default class MainMenu extends Scene {
         level5.setPadding(new Vec2(50, 10));
         level5.font = "PixelSimple";
         level5.onClickEventId = MainMenuEvent.PLAY_GAME;
+        level5.onClick = () => {
+            this.currenLevelNumber = 5;
+        }
 
         const level6 = <Button>this.add.uiElement(UIElementType.BUTTON, MainMenuLayer.LEVELS, {position: new Vec2(size.x + 300, size.y + 100 + offsetYDirection), text: "LVL 6"});
         level6.backgroundColor = Color.TRANSPARENT;
@@ -211,6 +226,9 @@ export default class MainMenu extends Scene {
         level6.setPadding(new Vec2(50, 10));
         level6.font = "PixelSimple";
         level6.onClickEventId = MainMenuEvent.PLAY_GAME;
+        level6.onClick = () => {
+            this.currenLevelNumber = 6;
+        }
 
 
         const back = this.add.uiElement(UIElementType.BUTTON, MainMenuLayer.LEVELS, {position: new Vec2(size.x, size.y + 300), text: "Back"});
@@ -340,7 +358,20 @@ export default class MainMenu extends Scene {
     protected handleEvent(event: GameEvent): void {
         switch(event.type) {
             case MainMenuEvent.PLAY_GAME: {
-                this.sceneManager.changeToScene(Level1);
+                console.log(event);
+                switch (this.currenLevelNumber) {
+                    case 1:
+                        this.sceneManager.changeToScene(Level1);
+                        break;
+                    case 2:
+                        this.sceneManager.changeToScene(Level1);
+                        break;
+                    case 3:
+                        this.sceneManager.changeToScene(Level1);
+                        break;
+                    default: 
+                    this.sceneManager.changeToScene(Level1);
+                    }
                 break;
             }
             case MainMenuEvent.LEVELS: {

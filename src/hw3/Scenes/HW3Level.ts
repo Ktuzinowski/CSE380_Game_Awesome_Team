@@ -483,7 +483,10 @@ export default abstract class HW3Level extends Scene {
         }
 
         // Add the player to the scene
+        console.log("This is before the add animated sprite shit")
+        console.log(key);
         this.player = this.add.animatedSprite(key, HW3Layers.PRIMARY);
+        console.log("This is a player that is running around")
         this.player.scale.set(0.25, 0.25);
         this.player.position.copy(this.playerSpawn);
         

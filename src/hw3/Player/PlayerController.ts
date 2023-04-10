@@ -104,7 +104,7 @@ export default class PlayerController extends StateMachineAI {
         // Start the player in the Idle state
 
         this.fuelTimer = new Timer(500, () => {
-            this.fuel +=1;
+            this.fuel +=3;
         },true);
         this.fuelTimer.start();
         this.initialize(PlayerStates.IDLE);
@@ -140,14 +140,6 @@ export default class PlayerController extends StateMachineAI {
             this.weapon.startSystem(500, 0, this.owner.position);
         }
         */
-        /*
-            This if-statement will place a tile wherever the user clicks on the screen. I have
-            left this here to make traversing the map a little easier, incase you accidently
-            destroy everything with the player's weapon.
-        */
-        if (Input.isMousePressed()) {
-            this.tilemap.setTileAtRowCol(this.tilemap.getColRowAt(Input.getGlobalMousePosition()),5);
-        }
         while (this.receiver.hasNextEvent()) {
             this.handleEvent(this.receiver.getNextEvent());
         }

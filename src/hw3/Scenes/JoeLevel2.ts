@@ -44,6 +44,8 @@ export default class JoeLevel2 extends HW3Level {
         this.tilemapScale = JoeLevel2.TILEMAP_SCALE;
         this.destructibleLayerKey = JoeLevel2.DESTRUCTIBLE_LAYER_KEY;
         this.wallsLayerKey = JoeLevel2.WALLS_LAYER_KEY;
+        this.painfulSlimesLayerKey = JoeLevel2.PAINFUL_SLIMES_LAYER_KEY;
+        this.sleepingSlimesLayerKey = JoeLevel2.SLEEPING_SLIMES_LAYER_KEY;
 
         // Set the key for the player's sprite
         this.playerSpriteKey = Level1.PLAYER_SPRITE_KEY;
