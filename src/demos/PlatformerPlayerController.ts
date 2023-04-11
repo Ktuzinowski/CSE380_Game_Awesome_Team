@@ -5,6 +5,7 @@ import GameEvent from "../Wolfie2D/Events/GameEvent";
 import { GameEventType } from "../Wolfie2D/Events/GameEventType";
 import Input from "../Wolfie2D/Input/Input";
 import AnimatedSprite from "../Wolfie2D/Nodes/Sprites/AnimatedSprite";
+import { PlayerAnimations, PlayerStates } from "../hw3/Player/PlayerController";
 
 export default class PlayerController extends ControllerAI {
     public owner: AnimatedSprite;
@@ -54,9 +55,9 @@ export default class PlayerController extends ControllerAI {
         if(this.owner.onGround && !Input.isJustPressed("jump")){
             // If we're on the ground, but aren't jumping, show walk animation
             if(velocity.x === 0){
-                    this.owner.animation.playIfNotAlready("IDLE", true);
+                    this.owner.animation.playIfNotAlready(PlayerAnimations.IDLE, true);
             } else {
-                this.owner.animation.playIfNotAlready("WALK", true);
+                this.owner.animation.playIfNotAlready(PlayerAnimations.RUN, true);
             }
         }
 

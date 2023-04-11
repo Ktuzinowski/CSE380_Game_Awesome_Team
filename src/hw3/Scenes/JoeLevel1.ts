@@ -13,7 +13,7 @@ import JoeLevel2 from "./JoeLevel2";
  */
 export default class JoeLevel1 extends HW3Level {
 
-    public static readonly PLAYER_SPAWN = new Vec2(90, 1540);
+    public static readonly PLAYER_SPAWN = new Vec2(90, 1576);
     public static readonly PLAYER_SPRITE_KEY = "PLAYER_SPRITE_KEY";
     public static readonly PLAYER_SPRITE_PATH = "hw4_assets/spritesheets/Intern.json";
 

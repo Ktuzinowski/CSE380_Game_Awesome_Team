@@ -15,7 +15,7 @@ export default class Fly extends PlayerState {
         if(this.parent.fuel !== 0) {
             
         this.parent.fuel -= 1;
-        this.parent.velocity.y += -22;
+        this.parent.velocity.y += -15;
         }
         // Play the eventual fly sound for the player
 		//this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: scene.getJumpAudioKey(), loop: false, holdReference: false});
@@ -25,7 +25,6 @@ export default class Fly extends PlayerState {
         // Update the direction the player is facing
         super.update(deltaT);
         
-        console.log(this.parent.velocity.y + 'in fly')
         if(Input.isPressed(HW3Controls.FLY)) {
             this.finished(PlayerStates.FLY);
         }
@@ -48,8 +47,9 @@ export default class Fly extends PlayerState {
             // Update the vertical velocity of the player
             this.parent.velocity.y += this.gravity*deltaT;
             // Move the player
-            this.owner.move(this.parent.velocity.scaled(deltaT));
         }
+        
+        this.owner.move(this.parent.velocity.scaled(deltaT));
 	}
 
 	public onExit(): Record<string, any> {
