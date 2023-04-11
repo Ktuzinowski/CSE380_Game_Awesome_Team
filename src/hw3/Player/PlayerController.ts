@@ -22,7 +22,7 @@ import Timer, { TimerState } from "../../Wolfie2D/Timing/Timer";
  */
 export const PlayerAnimations = {
     IDLE: "IDLE",
-    WALK: "WALK",
+    RUN: "RUN",
     FLY: "FLY",
 } as const
 
@@ -44,7 +44,7 @@ export const PlayerStates = {
     FALL: "FALL",
     DEAD: "DEAD",
     FLY: "FLY",
-    AIRBORNE: "Airborne",
+    AIRBORNE: "AIRBORNE",
     BOUNCESLIME: "BOUNCESLIME"
 } as const
 
