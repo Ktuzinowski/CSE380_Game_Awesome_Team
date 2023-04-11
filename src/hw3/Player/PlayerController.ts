@@ -103,7 +103,7 @@ export default class PlayerController extends StateMachineAI {
         this.receiver.subscribe(HW3Events.BOUNCED_ON_SLIME) // bounce on slime
         // Start the player in the Idle state
 
-        this.fuelTimer = new Timer(500, () => {
+        this.fuelTimer = new Timer(300, () => {
             this.fuel +=3;
         },true);
         this.fuelTimer.start();
@@ -165,7 +165,7 @@ export default class PlayerController extends StateMachineAI {
                     this.slimeBounceTimer.reset();
                     this.slimeBounceTimer.start();
                 }
-                this.velocity.y *= 2;
+                this.velocity.y *= 2.85;
                 console.log(this.velocity.y + " SLIME")
                 this.owner.move(this.velocity.scaled(this.deltaT));
                 break;
