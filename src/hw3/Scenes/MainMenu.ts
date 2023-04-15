@@ -8,8 +8,6 @@ import Layer from "../../Wolfie2D/Scene/Layer";
 import Scene from "../../Wolfie2D/Scene/Scene";
 import Color from "../../Wolfie2D/Utils/Color";
 import Level1 from "./HW3Level1";
-import JoeLevel1 from "./JoeLevel1";
-import JoeLevel2 from "./JoeLevel2";
 
 
 // Need to start adding layers
@@ -45,60 +43,91 @@ export default class MainMenu extends Scene {
     private currenLevelNumber: number = 1;
     public static readonly MUSIC_KEY = "MAIN_MENU_MUSIC";
     public static readonly MUSIC_PATH = "hw4_assets/music/menu.mp3";
+    
 
     public loadScene(): void {
         // Load the menu song
         this.load.audio(MainMenu.MUSIC_KEY, MainMenu.MUSIC_PATH);
+
+        // Load the background image
+        this.load.image("background", "../../../raw_assests/Background.png");
     }
 
     public startScene(): void {
+        // Center the viewport
+        let size = this.viewport.getHalfSize();
+        this.viewport.setFocus(size);
+        this.viewport.setZoomLevel(1);
+        this.viewport.setBounds(0, 0, 1200, 1200);
+
+        // Main Menu Screen
         this.mainMenuScreen = this.addUILayer(MainMenuLayer.MAIN_MENU);
+
+        // Background 
+        let bg = this.add.sprite("background", MainMenuLayer.MAIN_MENU);
+        let widthForBackground = size.x;
+        let heightForBackground = size.y;
+        bg.position.set(widthForBackground, heightForBackground - 100);
 
         // Levels Screen
         this.levelsScreen = this.addUILayer(MainMenuLayer.LEVELS);
         this.levelsScreen.setHidden(true);
 
+        // Background2
+        let bg2 = this.add.sprite("background", MainMenuLayer.LEVELS);
+        bg2.position.set(widthForBackground, heightForBackground - 100);
+
         // Controls Screen
         this.controlsScreen = this.addUILayer(MainMenuLayer.CONTROLS);
         this.controlsScreen.setHidden(true);
+
+        // Background3
+        let bg3 = this.add.sprite("background", MainMenuLayer.CONTROLS);
+        bg3.position.set(widthForBackground, heightForBackground - 100);
 
         // Help Screen
         this.helpScreen = this.addUILayer(MainMenuLayer.HELP);
         this.helpScreen.setHidden(true);
 
+        // Background4
+        let bg4 = this.add.sprite("background", MainMenuLayer.HELP);
+        bg4.position.set(widthForBackground, heightForBackground - 100);
+
         // Backstory Screen
         this.backstoryScreen = this.addUILayer(MainMenuLayer.BACKSTORY);
         this.backstoryScreen.setHidden(true);
+
+        // Background5
+        let bg5 = this.add.sprite("background", MainMenuLayer.BACKSTORY);
+        bg5.position.set(widthForBackground, heightForBackground - 100);
 
         // Cheatcodes Screen
         this.cheatCodesScreen = this.addUILayer(MainMenuLayer.CHEATCODES);
         this.cheatCodesScreen.setHidden(true);
 
-        // Center the viewport
-        let size = this.viewport.getHalfSize();
-        this.viewport.setFocus(size);
-        this.viewport.setZoomLevel(1);
-
-        const center = this.viewport.getCenter();
-        center.y -= 100;
+        // Background5
+        let bg6 = this.add.sprite("background", MainMenuLayer.CHEATCODES);
+        bg6.position.set(widthForBackground, heightForBackground - 100);
 
         // Main Menu Page
-        this.setupMainMenuScreen(center);
+        this.setupMainMenuScreen(size);
+
+        size.y -= 100;
 
         // Controls Page
-        this.setupControlsPage(center);
+        this.setupControlsPage(size);
 
         // Levels Page
-        this.setupLevelsScreen(center);
+        this.setupLevelsScreen(size);
 
         // Help Page
-        this.setupHelpPage(center);
+        this.setupHelpPage(size);
 
         // Cheat Codes Page
-        this.setupCheatCodesPage(center);
+        this.setupCheatCodesPage(size);
 
         // Backstory Page
-        this.setupBackstoryPage(center);
+        this.setupBackstoryPage(size);
 
         // Subscribe the the Button Events
         // Subscribe to the button events
@@ -125,10 +154,10 @@ export default class MainMenu extends Scene {
 
     public setupMainMenuScreen(size: Vec2) {
         // Create a play button
-        let playBtn = <Button>this.add.uiElement(UIElementType.BUTTON, MainMenuLayer.MAIN_MENU, {position: new Vec2(size.x, size.y - 100), text: "Start"});
+        let playBtn = <Button>this.add.uiElement(UIElementType.BUTTON, MainMenuLayer.MAIN_MENU, {position: new Vec2(size.x, size.y - 200), text: "Start"});
 
         // PlayBtn
-        playBtn.backgroundColor = Color.TRANSPARENT;
+        playBtn.backgroundColor = Color.BLACK;
         playBtn.borderColor = Color.WHITE;
         playBtn.borderRadius = 0;
         playBtn.setPadding(new Vec2(50, 10));
@@ -136,8 +165,8 @@ export default class MainMenu extends Scene {
         playBtn.onClickEventId = MainMenuEvent.PLAY_GAME;
 
         // Add Levels Button
-        const levels = <Button>this.add.uiElement(UIElementType.BUTTON, MainMenuLayer.MAIN_MENU, {position: new Vec2(size.x, size.y), text: "Levels"});
-        levels.backgroundColor = Color.TRANSPARENT;
+        const levels = <Button>this.add.uiElement(UIElementType.BUTTON, MainMenuLayer.MAIN_MENU, {position: new Vec2(size.x, size.y - 100), text: "Levels"});
+        levels.backgroundColor = Color.BLACK;
         levels.borderColor = Color.WHITE;
         levels.borderRadius = 0;
         levels.setPadding(new Vec2(50, 10));
@@ -145,8 +174,8 @@ export default class MainMenu extends Scene {
         levels.onClickEventId = MainMenuEvent.LEVELS;
 
         // Add Controls Button
-        const controls = <Button>this.add.uiElement(UIElementType.BUTTON, MainMenuLayer.MAIN_MENU, {position: new Vec2(size.x, size.y + 100), text: "Controls"});
-        controls.backgroundColor = Color.TRANSPARENT;
+        const controls = <Button>this.add.uiElement(UIElementType.BUTTON, MainMenuLayer.MAIN_MENU, {position: new Vec2(size.x, size.y), text: "Controls"});
+        controls.backgroundColor = Color.BLACK;
         controls.borderColor = Color.WHITE;
         controls.borderRadius = 0;
         controls.setPadding(new Vec2(50, 10));
@@ -154,8 +183,8 @@ export default class MainMenu extends Scene {
         controls.onClickEventId = MainMenuEvent.CONTROLS; 
 
         // Add Help Button
-        const help = <Button>this.add.uiElement(UIElementType.BUTTON, MainMenuLayer.MAIN_MENU, {position: new Vec2(size.x, size.y + 200), text: "Help"});
-        help.backgroundColor = Color.TRANSPARENT;
+        const help = <Button>this.add.uiElement(UIElementType.BUTTON, MainMenuLayer.MAIN_MENU, {position: new Vec2(size.x, size.y + 100), text: "Help"});
+        help.backgroundColor = Color.BLACK;
         help.borderColor = Color.WHITE;
         help.borderRadius = 0;
         help.setPadding(new Vec2(50, 10));
@@ -164,11 +193,9 @@ export default class MainMenu extends Scene {
     }
 
     public setupLevelsScreen(size: Vec2) {
-        const offsetYDirection = -100;
-        
         // Add Levels Button
-        const levelOne = <Button>this.add.uiElement(UIElementType.BUTTON, MainMenuLayer.LEVELS, {position: new Vec2(size.x - 300, size.y + offsetYDirection), text: "LVL 1"});
-        levelOne.backgroundColor = Color.TRANSPARENT;
+        const levelOne = <Button>this.add.uiElement(UIElementType.BUTTON, MainMenuLayer.LEVELS, {position: new Vec2(size.x - 300, size.y - 100), text: "LVL 1"});
+        levelOne.backgroundColor = Color.BLACK;
         levelOne.borderColor = Color.WHITE;
         levelOne.borderRadius = 0;
         levelOne.setPadding(new Vec2(50, 10));
@@ -178,8 +205,8 @@ export default class MainMenu extends Scene {
             this.currenLevelNumber = 1;
         }
 
-        const levelTwo = <Button>this.add.uiElement(UIElementType.BUTTON, MainMenuLayer.LEVELS, {position: new Vec2(size.x, size.y + offsetYDirection), text: "LVL 2"});
-        levelTwo.backgroundColor = Color.TRANSPARENT;
+        const levelTwo = <Button>this.add.uiElement(UIElementType.BUTTON, MainMenuLayer.LEVELS, {position: new Vec2(size.x, size.y - 100), text: "LVL 2"});
+        levelTwo.backgroundColor = Color.BLACK;
         levelTwo.borderColor = Color.WHITE;
         levelTwo.borderRadius = 0;
         levelTwo.setPadding(new Vec2(50, 10));
@@ -189,8 +216,8 @@ export default class MainMenu extends Scene {
             this.currenLevelNumber = 2;
         }
 
-        const level3 = <Button>this.add.uiElement(UIElementType.BUTTON, MainMenuLayer.LEVELS, {position: new Vec2(size.x + 300, size.y + offsetYDirection), text: "LVL 3"});
-        level3.backgroundColor = Color.TRANSPARENT;
+        const level3 = <Button>this.add.uiElement(UIElementType.BUTTON, MainMenuLayer.LEVELS, {position: new Vec2(size.x + 300, size.y - 100), text: "LVL 3"});
+        level3.backgroundColor = Color.BLACK;
         level3.borderColor = Color.WHITE;
         level3.borderRadius = 0;
         level3.setPadding(new Vec2(50, 10));
@@ -200,16 +227,16 @@ export default class MainMenu extends Scene {
             this.currenLevelNumber = 3;
         }
 
-        const level4 = <Button>this.add.uiElement(UIElementType.BUTTON, MainMenuLayer.LEVELS, {position: new Vec2(size.x - 300, size.y + 100 + offsetYDirection), text: "LVL 4"});
-        level4.backgroundColor = Color.TRANSPARENT;
+        const level4 = <Button>this.add.uiElement(UIElementType.BUTTON, MainMenuLayer.LEVELS, {position: new Vec2(size.x - 300, size.y), text: "LVL 4"});
+        level4.backgroundColor = Color.BLACK;
         level4.borderColor = Color.WHITE;
         level4.borderRadius = 0;
         level4.setPadding(new Vec2(50, 10));
         level4.font = "PixelSimple";
         level4.onClickEventId = MainMenuEvent.PLAY_GAME;
 
-        const level5 = <Button>this.add.uiElement(UIElementType.BUTTON, MainMenuLayer.LEVELS, {position: new Vec2(size.x, size.y + 100 + offsetYDirection), text: "LVL 5"});
-        level5.backgroundColor = Color.TRANSPARENT;
+        const level5 = <Button>this.add.uiElement(UIElementType.BUTTON, MainMenuLayer.LEVELS, {position: new Vec2(size.x, size.y), text: "LVL 5"});
+        level5.backgroundColor = Color.BLACK;
         level5.borderColor = Color.WHITE;
         level5.borderRadius = 0;
         level5.setPadding(new Vec2(50, 10));
@@ -219,8 +246,8 @@ export default class MainMenu extends Scene {
             this.currenLevelNumber = 5;
         }
 
-        const level6 = <Button>this.add.uiElement(UIElementType.BUTTON, MainMenuLayer.LEVELS, {position: new Vec2(size.x + 300, size.y + 100 + offsetYDirection), text: "LVL 6"});
-        level6.backgroundColor = Color.TRANSPARENT;
+        const level6 = <Button>this.add.uiElement(UIElementType.BUTTON, MainMenuLayer.LEVELS, {position: new Vec2(size.x + 300, size.y), text: "LVL 6"});
+        level6.backgroundColor = Color.BLACK;
         level6.borderColor = Color.WHITE;
         level6.borderRadius = 0;
         level6.setPadding(new Vec2(50, 10));
@@ -231,17 +258,19 @@ export default class MainMenu extends Scene {
         }
 
 
-        const back = this.add.uiElement(UIElementType.BUTTON, MainMenuLayer.LEVELS, {position: new Vec2(size.x, size.y + 300), text: "Back"});
+        const back = this.add.uiElement(UIElementType.BUTTON, MainMenuLayer.LEVELS, {position: new Vec2(size.x, size.y + 200), text: "Back"});
         back.size.set(200, 50);
         back.borderWidth = 2;
         back.borderColor = Color.WHITE;
-        back.backgroundColor = Color.TRANSPARENT;
+        back.backgroundColor = Color.BLACK;
         back.onClickEventId = MainMenuEvent.MENU;
     }
 
     public setupControlsPage(center: Vec2) {
-        const header = <Label>this.add.uiElement(UIElementType.LABEL, MainMenuLayer.CONTROLS, {position: new Vec2(center.x, center.y - 250), text: "Controls"});
+        const header = <Label>this.add.uiElement(UIElementType.LABEL, MainMenuLayer.CONTROLS, {position: new Vec2(center.x, center.y - 150), text: "Controls"});
+        header.padding.add(new Vec2(50, 50))
         header.textColor = Color.WHITE;
+        header.backgroundColor = Color.BLACK;
 
         const jumpW = <Label>this.add.uiElement(UIElementType.LABEL, MainMenuLayer.CONTROLS, {position: new Vec2(center.x, center.y - 50), text: "Jump - W, Space"});
         jumpW.textColor = Color.WHITE;
@@ -260,14 +289,14 @@ export default class MainMenu extends Scene {
         back.size.set(200, 50);
         back.borderWidth = 2;
         back.borderColor = Color.WHITE;
-        back.backgroundColor = Color.TRANSPARENT;
+        back.backgroundColor = Color.BLACK;
         back.onClickEventId = MainMenuEvent.MENU;
     }
 
     protected setupHelpPage(size: Vec2) {
-        const offsetForY = 0;
+        const offsetForY = -100;
         const levelTwo = <Button>this.add.uiElement(UIElementType.BUTTON, MainMenuLayer.HELP, {position: new Vec2(size.x, size.y + offsetForY), text: "Backstory"});
-        levelTwo.backgroundColor = Color.TRANSPARENT;
+        levelTwo.backgroundColor = Color.BLACK;
         levelTwo.borderColor = Color.WHITE;
         levelTwo.borderRadius = 0;
         levelTwo.setPadding(new Vec2(50, 10));
@@ -275,7 +304,7 @@ export default class MainMenu extends Scene {
         levelTwo.onClickEventId = MainMenuEvent.BACKSTORY;
 
         const level3 = <Button>this.add.uiElement(UIElementType.BUTTON, MainMenuLayer.HELP, {position: new Vec2(size.x, size.y + 150 + offsetForY), text: "Cheat Codes"});
-        level3.backgroundColor = Color.TRANSPARENT;
+        level3.backgroundColor = Color.BLACK;
         level3.borderColor = Color.WHITE;
         level3.borderRadius = 0;
         level3.setPadding(new Vec2(50, 10));
@@ -286,7 +315,7 @@ export default class MainMenu extends Scene {
         back.size.set(200, 50);
         back.borderWidth = 2;
         back.borderColor = Color.WHITE;
-        back.backgroundColor = Color.TRANSPARENT;
+        back.backgroundColor = Color.BLACK;
         back.onClickEventId = MainMenuEvent.MENU;
     }
 
@@ -319,7 +348,7 @@ export default class MainMenu extends Scene {
         back.size.set(200, 50);
         back.borderWidth = 2;
         back.borderColor = Color.WHITE;
-        back.backgroundColor = Color.TRANSPARENT;
+        back.backgroundColor = Color.BLACK;
         back.onClickEventId = MainMenuEvent.BACKTOHELP;
     }
 
@@ -351,7 +380,7 @@ export default class MainMenu extends Scene {
         back.size.set(200, 50);
         back.borderWidth = 2;
         back.borderColor = Color.WHITE;
-        back.backgroundColor = Color.TRANSPARENT;
+        back.backgroundColor = Color.BLACK;
         back.onClickEventId = MainMenuEvent.BACKTOHELP;
     }
 

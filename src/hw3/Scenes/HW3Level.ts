@@ -280,6 +280,14 @@ export default abstract class HW3Level extends Scene {
      * @param maxHealth the maximum health of the player
      */
     protected handleHealthChange(currentHealth: number, maxHealth: number): void {
+        console.log("This is calling handle health change " + currentHealth +  ' ' + maxHealth);
+        if (currentHealth === undefined || maxHealth === undefined) {
+            currentHealth = 10;
+            maxHealth = 10;
+        }
+        else if (currentHealth === 0) {
+            this.emitter.fireEvent(HW3Events.PLAYER_DEAD)
+        }
 		let unit = this.healthBarBg.size.x / maxHealth;
         
 		this.healthBar.size.set(this.healthBarBg.size.x - unit * (maxHealth - currentHealth), this.healthBarBg.size.y);
