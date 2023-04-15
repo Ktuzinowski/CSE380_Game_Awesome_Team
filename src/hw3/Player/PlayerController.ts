@@ -58,6 +58,9 @@ export default class PlayerController extends StateMachineAI {
     /** Health and max health for the player */
     protected _health: number;
     protected _maxHealth: number;
+    protected healthTimer: Timer;
+
+    // Fuel Properties
     protected _fuel: number;
     protected _maxFuel: number;
     
@@ -106,6 +109,9 @@ export default class PlayerController extends StateMachineAI {
         this.fuelTimer = new Timer(300, () => {
             this.fuel +=3;
         },true);
+        this.healthTimer = new Timer(300, () => {
+            this.health -= 2;
+        }, false);
         this.fuelTimer.start();
         this.initialize(PlayerStates.IDLE);
     }
@@ -160,6 +166,18 @@ export default class PlayerController extends StateMachineAI {
     public handleEvent(event: GameEvent): void {
         switch (event.type) {
             case HW3Events.BOUNCED_ON_PAIN: {
+                if (this.healthTimer.getCurrentStateOfTimer() === TimerState.ACTIVE) {
+                    break;
+                } else {
+                    this.healthTimer.start();
+                }
+                if (this.slimeBounceTimer.getCurrentStateOfTimer() === TimerState.ACTIVE) {
+                    return;
+                } else {
+                    this.slimeBounceTimer.reset();
+                    this.slimeBounceTimer.start();
+                }
+                this.velocity.y *= 2.85;
                 console.log("This is painful...")
                 break;
             }
