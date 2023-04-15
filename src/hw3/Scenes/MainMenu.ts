@@ -50,7 +50,7 @@ export default class MainMenu extends Scene {
         this.load.audio(MainMenu.MUSIC_KEY, MainMenu.MUSIC_PATH);
 
         // Load the background image
-        this.load.image("background", "../../../raw_assests/Background.png");
+        this.load.image("background", "hw4_assets/Background.png");
     }
 
     public startScene(): void {
