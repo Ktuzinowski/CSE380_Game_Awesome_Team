@@ -41,7 +41,6 @@ export default class JoeLevel1 extends HW3Level {
     public static readonly FUELPACK_KEY = "FUELPACK"
     public static readonly FUELPACK_PATH = "hw4_assets/fuelpack.png"
     public static readonly LEVEL_END = new AABB(new Vec2(224, 232), new Vec2(24, 16));
-    public static fuelpacks1: Array<Sprite>;
     protected fuelpackKey: string;
     
     public constructor(viewport: Viewport, sceneManager: SceneManager, renderingManager: RenderingManager, options: Record<string, any>) {
@@ -94,20 +93,20 @@ export default class JoeLevel1 extends HW3Level {
 
     public startScene(): void {
         super.startScene();
-        JoeLevel1.fuelpacks1 = new Array(12)
+        this.fuelpacks1 = new Array(12)
         let Fuelpacks =  this.load.getObject("Fuelpacks1")
-        for(let i = 0; i < JoeLevel1.fuelpacks1.length; i++) {
-            JoeLevel1.fuelpacks1[i] = this.add.sprite(JoeLevel1.FUELPACK_KEY, HW3Layers.PRIMARY);
-            JoeLevel1.fuelpacks1[i].visible = true;
+        for(let i = 0; i < this.fuelpacks1.length; i++) {
+            this.fuelpacks1[i] = this.add.sprite(JoeLevel1.FUELPACK_KEY, HW3Layers.PRIMARY);
+            this.fuelpacks1[i].visible = true;
             //let collider = new AABB(Vec2.ZERO, JoeLevel1.fuelpacks1[i].sizeWithZoom);
             //JoeLevel1.fuelpacks1[i].setCollisionShape(collider);
-            JoeLevel1.fuelpacks1[i].setGroup(HW3PhysicsGroups.FUELPACKS);
-            JoeLevel1.fuelpacks1[i].addPhysics()
+            this.fuelpacks1[i].setGroup(HW3PhysicsGroups.FUELPACKS);
+            this.fuelpacks1[i].addPhysics()
             
-            JoeLevel1.fuelpacks1[i].setTrigger(HW3PhysicsGroups.PLAYER, HW3Events.PICKED_UP_FUEL,null);
-            console.log("this is the id of this fuelpack" + JoeLevel1.fuelpacks1[i].id)
+            this.fuelpacks1[i].setTrigger(HW3PhysicsGroups.PLAYER, HW3Events.PICKED_UP_FUEL,null);
+            console.log("this is the id of this fuelpack" + this.fuelpacks1[i].id)
 
-            JoeLevel1.fuelpacks1[i].position.set(Fuelpacks.items[i][0]*2, Fuelpacks.items[i][1]*2-2)
+            this.fuelpacks1[i].position.set(Fuelpacks.items[i][0]*2, Fuelpacks.items[i][1]*2-2)
         }
         this.nextLevel = JoeLevel2;
         //this.receiver.subscribe(HW3Events.PICKED_UP_FUEL);

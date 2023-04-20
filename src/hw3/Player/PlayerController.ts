@@ -16,7 +16,6 @@ import { HW3Events } from "../HW3Events";
 import Dead from "./PlayerStates/Dead";
 import GameEvent from "../../Wolfie2D/Events/GameEvent";
 import Timer, { TimerState } from "../../Wolfie2D/Timing/Timer";
-import JoeLevel1 from "../Scenes/JoeLevel1";
 
 /**
  * Animation keys for the player spritesheet
@@ -199,16 +198,7 @@ export default class PlayerController extends StateMachineAI {
                 break;
             }
             case HW3Events.PICKED_UP_FUEL: {
-                console.log("i picked up fuel") 
-                this.fuel += 20;
-                console.log(event.data.get("other"))
-                let fuelpack = JoeLevel1.fuelpacks1.find(fuelpack=> fuelpack.id === event.data.get("other"))
-                if(fuelpack !== undefined) {
-                    console.log("do you get here")
-                    fuelpack.visible = false;
-                    fuelpack.removePhysics();
-                }
-                //this.emitter.fireEvent(HW3Events.PICKED_UP_FUEL);
+                this.fuel  += 20;
                 break;
             }
             // Default: Throw an error! No unhandled events allowed.
