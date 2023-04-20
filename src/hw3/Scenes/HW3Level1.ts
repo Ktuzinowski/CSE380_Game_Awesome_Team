@@ -31,6 +31,8 @@ export default class Level1 extends HW3Level {
 
     public static readonly TILE_DESTROYED_KEY = "TILE_DESTROYED";
     public static readonly TILE_DESTROYED_PATH = "hw4_assets/sounds/switch.wav";
+    //public static readonly FUELPACK_KEY = "FUELPACK"
+    //public static readonly FUELPACK_PATH = "hw4_assets/fuelpack.png"
 
     public static readonly LEVEL_END = new AABB(new Vec2(224, 232), new Vec2(24, 16));
 
@@ -43,6 +45,7 @@ export default class Level1 extends HW3Level {
         this.destructibleLayerKey = Level1.DESTRUCTIBLE_LAYER_KEY;
         this.sleepingSlimesLayerKey = Level1.SLEEPING_SLIMES_LAYER_KEY;
         this.painfulSlimesLayerKey = Level1.PAINFUL_SLIMES_LAYER_KEY;
+        //this.fuelpackKey = Level1.FUELPACK_KEY;
         this.wallsLayerKey = Level1.WALLS_LAYER_KEY;
         console.log(this.painfulSlimes);
         // Set the key for the player's sprite

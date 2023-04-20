@@ -85,6 +85,7 @@ export default abstract class HW3Level extends Scene {
     protected sleepingSlimesLayerKey: string;
     protected painfulSlimesLayerKey: string;
     protected wallsLayerKey: string;
+    //protected fuelpackKey: string;
     /** The scale for the tilemap */
     protected tilemapScale: Vec2;
     /** The destrubtable layer of the tilemap */
@@ -100,6 +101,8 @@ export default abstract class HW3Level extends Scene {
     protected levelMusicKey: string;
     protected jumpAudioKey: string;
     protected tileDestroyedAudioKey: string;
+    //public static readonly FUELPACK_KEY = "FUELPACK"
+    //public static readonly FUELPACK_PATH = "hw4_assets/fuelpack.png"
 
     public constructor(viewport: Viewport, sceneManager: SceneManager, renderingManager: RenderingManager, options: Record<string, any>) {
         super(viewport, sceneManager, renderingManager, {...options, physics: {
@@ -335,6 +338,9 @@ export default abstract class HW3Level extends Scene {
         } else if (this.sleepingSlimesLayerKey === undefined || this.painfulSlimesLayerKey === undefined) {
             throw new Error("Make sure the keys for the Sleeping Slimes layer and Painful Slimes layer are both set")
         }
+        //else if (this.fuelpackKey === undefined) {
+        //    throw new Error("make sure the key for fuelpacks layer is set")
+        //}
 
         // Get the wall and destructible layers 
         this.walls = this.getTilemap(this.wallsLayerKey) as OrthogonalTilemap;
