@@ -25,6 +25,7 @@ import { HW3PhysicsGroups } from "../HW3PhysicsGroups";
 import HW3FactoryManager from "../Factory/HW3FactoryManager";
 import MainMenu from "./MainMenu";
 import Particle from "../../Wolfie2D/Nodes/Graphics/Particle";
+import Sprite from "../../Wolfie2D/Nodes/Sprites/Sprite";
 
 /**
  * A const object for the layer names
@@ -85,6 +86,7 @@ export default abstract class HW3Level extends Scene {
     protected sleepingSlimesLayerKey: string;
     protected painfulSlimesLayerKey: string;
     protected wallsLayerKey: string;
+    //protected fuelpackKey: string;
     /** The scale for the tilemap */
     protected tilemapScale: Vec2;
     /** The destrubtable layer of the tilemap */
@@ -100,6 +102,9 @@ export default abstract class HW3Level extends Scene {
     protected levelMusicKey: string;
     protected jumpAudioKey: string;
     protected tileDestroyedAudioKey: string;
+    //public static readonly FUELPACK_KEY = "FUELPACK"
+    //public static readonly FUELPACK_PATH = "hw4_assets/fuelpack.png"
+    protected fuelpacks1: Array<Sprite>;
 
     public constructor(viewport: Viewport, sceneManager: SceneManager, renderingManager: RenderingManager, options: Record<string, any>) {
         super(viewport, sceneManager, renderingManager, {...options, physics: {
@@ -209,13 +214,23 @@ export default abstract class HW3Level extends Scene {
                 this.sceneManager.changeToScene(MainMenu);
                 break;
             }
+            case HW3Events.PICKED_UP_FUEL: {
+                console.log("i picked up fuel") 
+                console.log(event.data.get("other"))
+                let fuelpack = this.fuelpacks1.find(fuelpack=> fuelpack.id === event.data.get("other"))
+                if(fuelpack !== undefined) {
+                    console.log("do you get here")
+                    fuelpack.visible = false;
+                    fuelpack.removePhysics();
+                }
+                break;
+            }
             // Default: Throw an error! No unhandled events allowed.
             default: {
                 throw new Error(`Unhandled event caught in scene with type ${event.type}`)
             }
         }
     }
-
     /* Handlers for the different events the scene is subscribed to */
 
     /**
@@ -335,6 +350,9 @@ export default abstract class HW3Level extends Scene {
         } else if (this.sleepingSlimesLayerKey === undefined || this.painfulSlimesLayerKey === undefined) {
             throw new Error("Make sure the keys for the Sleeping Slimes layer and Painful Slimes layer are both set")
         }
+        //else if (this.fuelpackKey === undefined) {
+        //    throw new Error("make sure the key for fuelpacks layer is set")
+        //}
 
         // Get the wall and destructible layers 
         this.walls = this.getTilemap(this.wallsLayerKey) as OrthogonalTilemap;
@@ -373,6 +391,7 @@ export default abstract class HW3Level extends Scene {
         this.receiver.subscribe(HW3Events.HEALTH_CHANGE);
         this.receiver.subscribe(HW3Events.PLAYER_DEAD);
         this.receiver.subscribe(HW3Events.FUEL_CHANGE);
+        this.receiver.subscribe(HW3Events.PICKED_UP_FUEL);
     }
     /**
      * Adds in any necessary UI to the game

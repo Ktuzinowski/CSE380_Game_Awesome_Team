@@ -1,12 +1,17 @@
 import AABB from "../../Wolfie2D/DataTypes/Shapes/AABB";
 import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
-import HW3Level from "./HW3Level";
+import HW3Level, { HW3Layers } from "./HW3Level";
 
 import Viewport from "../../Wolfie2D/SceneGraph/Viewport";
 import RenderingManager from "../../Wolfie2D/Rendering/RenderingManager";
 import SceneManager from "../../Wolfie2D/Scene/SceneManager";
 import Level1 from "./HW3Level1";
 import JoeLevel2 from "./JoeLevel2";
+import Sprite from "../../Wolfie2D/Nodes/Sprites/Sprite";
+import AIManager from "../../Wolfie2D/AI/AIManager";
+import { HW3PhysicsGroups } from "../HW3PhysicsGroups";
+import { HW3Events } from "../HW3Events";
+import GameEvent from "../../Wolfie2D/Events/GameEvent";
 
 /**
  * The second level for HW4. It should be the goose dungeon / cave.
@@ -33,9 +38,11 @@ export default class JoeLevel1 extends HW3Level {
 
     public static readonly TILE_DESTROYED_KEY = "TILE_DESTROYED";
     public static readonly TILE_DESTROYED_PATH = "hw4_assets/sounds/switch.wav";
-
+    public static readonly FUELPACK_KEY = "FUELPACK"
+    public static readonly FUELPACK_PATH = "hw4_assets/fuelpack.png"
     public static readonly LEVEL_END = new AABB(new Vec2(224, 232), new Vec2(24, 16));
-
+    protected fuelpackKey: string;
+    
     public constructor(viewport: Viewport, sceneManager: SceneManager, renderingManager: RenderingManager, options: Record<string, any>) {
         super(viewport, sceneManager, renderingManager, options);
 
@@ -47,7 +54,8 @@ export default class JoeLevel1 extends HW3Level {
 
         this.sleepingSlimesLayerKey = JoeLevel1.SLEEPING_SLIMES_LAYER_KEY;
         this.painfulSlimesLayerKey = JoeLevel1.PAINFUL_SLIMES_LAYER_KEY;
-        
+        this.fuelpackKey = JoeLevel1.FUELPACK_KEY;
+
         // Set the key for the player's sprite
         this.playerSpriteKey = Level1.PLAYER_SPRITE_KEY;
         // Set the player's spawn
@@ -61,7 +69,6 @@ export default class JoeLevel1 extends HW3Level {
         // Level end size and position
         this.levelEndPosition = new Vec2(32, 216).mult(this.tilemapScale);
         this.levelEndHalfSize = new Vec2(32, 32).mult(this.tilemapScale);
-
     }
     /**
      * Load in resources for level 2.
@@ -69,13 +76,58 @@ export default class JoeLevel1 extends HW3Level {
     public loadScene(): void {
         // Load in the tilemap
         this.load.tilemap(this.tilemapKey, JoeLevel1.TILEMAP_PATH);
+        this.load.spritesheet(this.playerSpriteKey, Level1.PLAYER_SPRITE_PATH);
+        this.load.image(this.fuelpackKey, JoeLevel1.FUELPACK_PATH)
+        this.load.object("Fuelpacks1", "hw4_assets/Fuelpacks1.json");
+        this.load.image("fuelpack", "hw4_assets/fuelpack.png");
+        //this.fuelpacks = new Array<Fuelpack>();
+        //console.log("YOOOOOOOOOO" + fuelpacks.items.length)
+        //for(let i = 0; i < fuelpacks.items.length; i++) {
+        //    let sprite = this.add.sprite("fuelpack", HW3Layers.PRIMARY)
+            
+        //}
+        console.log("B")
+        
+        
     }
 
     public startScene(): void {
         super.startScene();
-        this.nextLevel = JoeLevel2;
-    }
+        this.fuelpacks1 = new Array(12)
+        let Fuelpacks =  this.load.getObject("Fuelpacks1")
+        for(let i = 0; i < this.fuelpacks1.length; i++) {
+            this.fuelpacks1[i] = this.add.sprite(JoeLevel1.FUELPACK_KEY, HW3Layers.PRIMARY);
+            this.fuelpacks1[i].visible = true;
+            //let collider = new AABB(Vec2.ZERO, JoeLevel1.fuelpacks1[i].sizeWithZoom);
+            //JoeLevel1.fuelpacks1[i].setCollisionShape(collider);
+            this.fuelpacks1[i].setGroup(HW3PhysicsGroups.FUELPACKS);
+            this.fuelpacks1[i].addPhysics()
+            
+            this.fuelpacks1[i].setTrigger(HW3PhysicsGroups.PLAYER, HW3Events.PICKED_UP_FUEL,null);
+            console.log("this is the id of this fuelpack" + this.fuelpacks1[i].id)
 
+            this.fuelpacks1[i].position.set(Fuelpacks.items[i][0]*2, Fuelpacks.items[i][1]*2-2)
+        }
+        this.nextLevel = JoeLevel2;
+        //this.receiver.subscribe(HW3Events.PICKED_UP_FUEL);
+    }
+    /*
+    public updateScene(deltaT: number) {
+        // Handle all game events
+        while (this.receiver.hasNextEvent()) {
+            this.handleEvent(this.receiver.getNextEvent());
+        }
+    }
+    
+    protected handleEvent(event: GameEvent): void {
+        switch (event.type) {
+            case HW3Events.PICKED_UP_FUEL: {
+                
+                break;
+            }
+        }
+    }
+    */
     protected initializeViewport(): void {
         super.initializeViewport();
         this.viewport.setBounds(16, 16, 800, 1600);

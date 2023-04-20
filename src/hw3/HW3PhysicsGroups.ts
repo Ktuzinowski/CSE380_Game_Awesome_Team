@@ -13,5 +13,6 @@ export const HW3PhysicsGroups = {
     GROUND: "GROUND",
     DESTRUCTABLE: "DESTRUCTABLE",
     BOUNCABLE: "BOUNCABLE",
-    PAINFUL: "PAINFUL"
+    PAINFUL: "PAINFUL",
+    FUELPACKS: "FUELPACKS"
 } as const;

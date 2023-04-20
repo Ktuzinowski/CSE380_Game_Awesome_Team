@@ -104,6 +104,7 @@ export default class PlayerController extends StateMachineAI {
 
         this.receiver.subscribe(HW3Events.BOUNCED_ON_PAIN) // bounce on pain
         this.receiver.subscribe(HW3Events.BOUNCED_ON_SLIME) // bounce on slime
+        this.receiver.subscribe(HW3Events.PICKED_UP_FUEL) // picked up fuel
         // Start the player in the Idle state
 
         this.fuelTimer = new Timer(300, () => {
@@ -196,13 +197,16 @@ export default class PlayerController extends StateMachineAI {
                 this.owner.move(this.velocity.scaled(this.deltaT));
                 break;
             }
+            case HW3Events.PICKED_UP_FUEL: {
+                this.fuel  += 20;
+                break;
+            }
             // Default: Throw an error! No unhandled events allowed.
             default: {
                 throw new Error(`Unhandled event caught in scene with type ${event.type}`)
             }
         }
     }
-
 
 
     public get velocity(): Vec2 { return this._velocity; }

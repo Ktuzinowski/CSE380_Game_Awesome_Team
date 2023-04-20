@@ -34,8 +34,10 @@ export default class JoeLevel2 extends HW3Level {
     public static readonly TILE_DESTROYED_KEY = "TILE_DESTROYED";
     public static readonly TILE_DESTROYED_PATH = "hw4_assets/sounds/switch.wav";
 
+    public static readonly FUELPACK_KEY = "FUELPACK"
+    public static readonly FUELPACK_PATH = "hw4_assets/fuelpack.png"
     public static readonly LEVEL_END = new AABB(new Vec2(224, 232), new Vec2(24, 16));
-
+    protected fuelpackKey: string;
     public constructor(viewport: Viewport, sceneManager: SceneManager, renderingManager: RenderingManager, options: Record<string, any>) {
         super(viewport, sceneManager, renderingManager, options);
 
@@ -46,7 +48,8 @@ export default class JoeLevel2 extends HW3Level {
         this.wallsLayerKey = JoeLevel2.WALLS_LAYER_KEY;
         this.painfulSlimesLayerKey = JoeLevel2.PAINFUL_SLIMES_LAYER_KEY;
         this.sleepingSlimesLayerKey = JoeLevel2.SLEEPING_SLIMES_LAYER_KEY;
-
+        this.fuelpackKey = JoeLevel2.FUELPACK_KEY;
+        
         // Set the key for the player's sprite
         this.playerSpriteKey = Level1.PLAYER_SPRITE_KEY;
         // Set the player's spawn
