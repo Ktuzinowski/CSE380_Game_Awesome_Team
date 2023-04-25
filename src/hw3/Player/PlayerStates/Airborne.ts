@@ -8,13 +8,18 @@ export default class Airborne extends PlayerState {
 
     onEnter(options: Record<string, any>): void {
         console.log("ENTERING AIRBORNE")
-        this.owner.animation.playIfNotAlready(PlayerAnimations.FLY);
+        if (!this.owner.animation.isPlaying(PlayerAnimations.DAMAGE)) {
+            this.owner.animation.playIfNotAlready(PlayerAnimations.FLY);
+        }
         //console.log(this.parent.velocity.y)
         // If we're falling, the vertical velocity should be >= 0
         
     }
 
     update(deltaT: number): void {
+        if (!this.owner.animation.isPlaying(PlayerAnimations.DAMAGE) && !this.owner.animation.isPlaying(PlayerAnimations.DYING) && !this.owner.animation.isPlaying(PlayerAnimations.DEAD)) {
+            this.owner.animation.playIfNotAlready(PlayerAnimations.FLY);
+        }
         //console.log(this.parent.velocity.y)
         // If the player hits the ground, start idling and check if we should take damage
         if (this.owner.onGround || this.owner.onCeiling) {
