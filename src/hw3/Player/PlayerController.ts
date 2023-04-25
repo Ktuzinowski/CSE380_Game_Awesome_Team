@@ -25,6 +25,9 @@ export const PlayerAnimations = {
     RUN_LEFT: "RUN_LEFT",
     RUN_RIGHT: "RUN_RIGHT",
     FLY: "FLY",
+    DYING: "DYING",
+    DEAD: "DEAD",
+    DAMAGE: "DAMAGE"
 } as const
 
 /**
@@ -76,6 +79,10 @@ export default class PlayerController extends StateMachineAI {
     // protected cannon: Sprite;
     protected weapon: PlayerWeapon;
 
+    protected timerForDeathAnimation: Timer;
+
+    protected timerForDamageAnimation: Timer;
+
     protected deltaT: number = 0;
     protected slimeBounceTimer: Timer = new Timer(100, () => {
         console.log("Finished bounce")
@@ -116,6 +123,17 @@ export default class PlayerController extends StateMachineAI {
         }, false);
         this.fuelTimer.start();
         this.initialize(PlayerStates.IDLE);
+
+        // Timer for Death Animation
+        this.timerForDeathAnimation = new Timer(440,  () => {
+            this.owner.animation.play(PlayerAnimations.DEAD);
+            this.emitter.fireEvent(HW3Events.PLAYER_DEAD);
+        })
+
+        // // Timer for Pain Animation
+        this.timerForDamageAnimation = new Timer(50, () => {
+            this.owner.animation.play(PlayerAnimations.FLY);
+        })
     }
 
     /** 
@@ -135,7 +153,9 @@ export default class PlayerController extends StateMachineAI {
     public update(deltaT: number): void {
 		super.update(deltaT);
         this.deltaT = deltaT;
-
+        if (this.timerForDeathAnimation.getCurrentStateOfTimer() === TimerState.ACTIVE) {
+            return;
+        }
         // Update the rotation to apply the particles velocity vector
         this.weapon.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
 
@@ -172,6 +192,9 @@ export default class PlayerController extends StateMachineAI {
                     break;
                 } else {
                     this.healthTimer.start();
+                    if (!this.owner.animation.isPlaying(PlayerAnimations.DYING) && !this.owner.animation.isPlaying(PlayerAnimations.DEAD)) {
+                        this.owner.animation.playIfNotAlready(PlayerAnimations.DAMAGE);
+                    }
                 }
                 if (this.slimeBounceTimer.getCurrentStateOfTimer() === TimerState.ACTIVE) {
                     return;
@@ -225,6 +248,10 @@ export default class PlayerController extends StateMachineAI {
         // When the health changes, fire an event up to the scene.
         this.emitter.fireEvent(HW3Events.HEALTH_CHANGE, {curhp: this.health, maxhp: this.maxHealth});
         // If the health hit 0, change the state of the player
+        if (this.health == 0 && this.timerForDeathAnimation.getCurrentStateOfTimer() !== TimerState.ACTIVE) {
+            this.owner.animation.play(PlayerAnimations.DYING, false);
+            this.timerForDeathAnimation.start();
+        }
     }
     public get maxFuel(): number { return this._maxFuel; }
     public set maxFuel(maxFuel: number) { this._maxFuel = maxFuel; }

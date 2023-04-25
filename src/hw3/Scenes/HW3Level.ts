@@ -300,9 +300,6 @@ export default abstract class HW3Level extends Scene {
             currentHealth = 10;
             maxHealth = 10;
         }
-        else if (currentHealth === 0) {
-            this.emitter.fireEvent(HW3Events.PLAYER_DEAD)
-        }
 		let unit = this.healthBarBg.size.x / maxHealth;
         
 		this.healthBar.size.set(this.healthBarBg.size.x - unit * (maxHealth - currentHealth), this.healthBarBg.size.y);
@@ -534,26 +531,26 @@ export default abstract class HW3Level extends Scene {
                 }
             ]
         });
-        // Give the player a death animation
-        this.player.tweens.add(PlayerTweens.DEATH, {
-            startDelay: 0,
-            duration: 500,
-            effects: [
-                {
-                    property: "rotation",
-                    start: 0,
-                    end: Math.PI,
-                    ease: EaseFunctionType.IN_OUT_QUAD
-                },
-                {
-                    property: "alpha",
-                    start: 1,
-                    end: 0,
-                    ease: EaseFunctionType.IN_OUT_QUAD
-                }
-            ],
-            onEnd: HW3Events.PLAYER_DEAD
-        });
+        // // Give the player a death animation
+        // this.player.tweens.add(PlayerTweens.DEATH, {
+        //     startDelay: 0,
+        //     duration: 500,
+        //     effects: [
+        //         {
+        //             property: "rotation",
+        //             start: 0,
+        //             end: Math.PI,
+        //             ease: EaseFunctionType.IN_OUT_QUAD
+        //         },
+        //         {
+        //             property: "alpha",
+        //             start: 1,
+        //             end: 0,
+        //             ease: EaseFunctionType.IN_OUT_QUAD
+        //         }
+        //     ],
+        //     onEnd: HW3Events.PLAYER_DEAD
+        // });
 
         // Give the player it's AI
         this.player.addAI(PlayerController, { 

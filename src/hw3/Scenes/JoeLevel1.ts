@@ -12,7 +12,7 @@ import AIManager from "../../Wolfie2D/AI/AIManager";
 import { HW3PhysicsGroups } from "../HW3PhysicsGroups";
 import { HW3Events } from "../HW3Events";
 import GameEvent from "../../Wolfie2D/Events/GameEvent";
-
+import MainMenu from "./MainMenu";
 /**
  * The second level for HW4. It should be the goose dungeon / cave.
  */
@@ -108,7 +108,7 @@ export default class JoeLevel1 extends HW3Level {
 
             this.fuelpacks1[i].position.set(Fuelpacks.items[i][0]*2, Fuelpacks.items[i][1]*2-2)
         }
-        this.nextLevel = JoeLevel2;
+        this.nextLevel = MainMenu;
         //this.receiver.subscribe(HW3Events.PICKED_UP_FUEL);
     }
     /*
