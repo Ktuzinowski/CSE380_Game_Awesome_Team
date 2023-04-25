@@ -42,7 +42,7 @@ export default class MainMenu extends Scene {
     private backstoryScreen: Layer;
     private currenLevelNumber: number = 1;
     public static readonly MUSIC_KEY = "MAIN_MENU_MUSIC";
-    public static readonly MUSIC_PATH = "hw4_assets/music/menu.mp3";
+    public static readonly MUSIC_PATH = "hw4_assets/music/BackgroundMusic.wav";
     
 
     public loadScene(): void {

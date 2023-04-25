@@ -8,7 +8,11 @@ export default class Walk extends PlayerState {
 	onEnter(options: Record<string, any>): void {
         console.log("ENTERING RUN")
 		this.parent.speed = this.parent.MIN_SPEED;
-        this.owner.animation.play(PlayerAnimations.RUN, true);
+        if (this.parent.inputDir.x < 0) {
+            this.owner.animation.playIfNotAlready(PlayerAnimations.RUN_LEFT, true);
+        } else {
+            this.owner.animation.playIfNotAlready(PlayerAnimations.RUN_RIGHT, true);
+        }
 	}
 
 	update(deltaT: number): void {

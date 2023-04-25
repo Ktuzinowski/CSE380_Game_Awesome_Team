@@ -22,7 +22,8 @@ import Timer, { TimerState } from "../../Wolfie2D/Timing/Timer";
  */
 export const PlayerAnimations = {
     IDLE: "IDLE",
-    RUN: "RUN",
+    RUN_LEFT: "RUN_LEFT",
+    RUN_RIGHT: "RUN_RIGHT",
     FLY: "FLY",
 } as const
 
