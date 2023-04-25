@@ -56,8 +56,6 @@ export default class PlayerController extends ControllerAI {
             // If we're on the ground, but aren't jumping, show walk animation
             if(velocity.x === 0){
                     this.owner.animation.playIfNotAlready(PlayerAnimations.IDLE, true);
-            } else {
-                this.owner.animation.playIfNotAlready(PlayerAnimations.RUN, true);
             }
         }
 
