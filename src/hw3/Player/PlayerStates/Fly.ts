@@ -3,7 +3,6 @@ import { GameEventType } from "../../../Wolfie2D/Events/GameEventType";
 import { PlayerAnimations, PlayerStates, PlayerTweens } from "../PlayerController";
 import Input from "../../../Wolfie2D/Input/Input";
 import { HW3Controls } from "../../HW3Controls";
-import Timer from "../../../Wolfie2D/Timing/Timer";
 
 import PlayerState from "./PlayerState";
 
@@ -17,16 +16,14 @@ export default class Fly extends PlayerState {
         this.parent.fuel -= 1;
         this.parent.velocity.y += -15;
         }
-        // Play the eventual fly sound for the player
-		//this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: scene.getJumpAudioKey(), loop: false, holdReference: false});
 	}
 
 	public update(deltaT: number): void {
         // Update the direction the player is facing
         super.update(deltaT);
-        
         if(Input.isPressed(HW3Controls.FLY)) {
             this.finished(PlayerStates.FLY);
+            this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.owner.getScene().getJumpAudioKey(), loop: false, holdReference: false});
         }
         // If the player hit the ground, start idling
         if (this.owner.onGround) {

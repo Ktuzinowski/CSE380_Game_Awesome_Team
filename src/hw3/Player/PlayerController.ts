@@ -16,6 +16,7 @@ import { HW3Events } from "../HW3Events";
 import Dead from "./PlayerStates/Dead";
 import GameEvent from "../../Wolfie2D/Events/GameEvent";
 import Timer, { TimerState } from "../../Wolfie2D/Timing/Timer";
+import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 
 /**
  * Animation keys for the player spritesheet
@@ -127,7 +128,7 @@ export default class PlayerController extends StateMachineAI {
         this.initialize(PlayerStates.IDLE);
 
         // Timer for Death Animation
-        this.timerForDeathAnimation = new Timer(440,  () => {
+        this.timerForDeathAnimation = new Timer(500,  () => {
             this.owner.animation.play(PlayerAnimations.DEAD);
             this.emitter.fireEvent(HW3Events.PLAYER_DEAD);
         })
@@ -155,7 +156,8 @@ export default class PlayerController extends StateMachineAI {
     public update(deltaT: number): void {
 		super.update(deltaT);
         this.deltaT = deltaT;
-        if (this.timerForDeathAnimation.getCurrentStateOfTimer() === TimerState.ACTIVE) {
+        if (this.timerForDeathAnimation.getCurrentStateOfTimer() === TimerState.ACTIVE || this.timerForDeathAnimation.hasRun()) {
+            console.log("Returning from here...")
             return;
         }
         // Update the rotation to apply the particles velocity vector
@@ -196,6 +198,8 @@ export default class PlayerController extends StateMachineAI {
                     this.healthTimer.start();
                     if (!this.owner.animation.isPlaying(PlayerAnimations.DYING) && !this.owner.animation.isPlaying(PlayerAnimations.DEAD)) {
                         this.owner.animation.playIfNotAlready(PlayerAnimations.DAMAGE);
+                        // Painful Slime Sound
+		                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.owner.getScene().getPainfulSlimeBounceAudioKey(), loop: false, holdReference: false});
                     }
                 }
                 if (this.slimeBounceTimer.getCurrentStateOfTimer() === TimerState.ACTIVE) {
@@ -214,6 +218,7 @@ export default class PlayerController extends StateMachineAI {
                 } else {
                     this.slimeBounceTimer.reset();
                     this.slimeBounceTimer.start();
+                    this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.owner.getScene().getSlimeBounceAudioKey(), loop: false, holdReference: false});
                 }
                 this.velocity.y *= 2.85;
                 console.log(this.velocity.y + " SLIME")
@@ -222,6 +227,7 @@ export default class PlayerController extends StateMachineAI {
             }
             case HW3Events.PICKED_UP_FUEL: {
                 this.fuel  += 20;
+                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.owner.getScene().getFuelpackAudio(), loop: false, holdReference: false});
                 break;
             }
             // Default: Throw an error! No unhandled events allowed.
@@ -250,6 +256,7 @@ export default class PlayerController extends StateMachineAI {
         if (this.health == 0 && this.timerForDeathAnimation.getCurrentStateOfTimer() !== TimerState.ACTIVE) {
             this.owner.animation.play(PlayerAnimations.DYING, false);
             this.timerForDeathAnimation.start();
+            this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.owner.getScene().getDeathAudioKey(), loop: false, holdReference: false});
         }
     }
     public get maxFuel(): number { return this._maxFuel; }
