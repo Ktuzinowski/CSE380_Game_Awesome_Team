@@ -22,7 +22,7 @@ export default class Airborne extends PlayerState {
         }
         //console.log(this.parent.velocity.y)
         // If the player hits the ground, start idling and check if we should take damage
-        if (this.owner.onGround || this.owner.onCeiling) {
+        if (this.owner.onGround) {
             //this.parent.health -= Math.floor(this.parent.velocity.y / 300);
             this.parent.fuel += 0;
             if(this.parent.velocity.y < 50 && this.parent.velocity.y > -50){
@@ -44,6 +44,10 @@ export default class Airborne extends PlayerState {
             this.parent.velocity.x += dir.x * this.parent.speed/3.5 - 0.3*this.parent.velocity.x;
             // Update the vertical velocity of the player
             this.parent.velocity.y += this.gravity*deltaT;
+            // Indicating that we hit the ceiling
+            if (this.owner.onCeiling) {
+                this.parent.velocity.y *= -0.5
+            }
             // Move the player
             this.owner.move(this.parent.velocity.scaled(deltaT));
         }

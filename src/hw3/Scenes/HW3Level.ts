@@ -555,8 +555,9 @@ export default abstract class HW3Level extends Scene {
         // Give the player it's AI
         this.player.addAI(PlayerController, { 
             weaponSystem: this.playerWeaponSystem, 
-            tilemap: "Destructable" 
+            tilemap: "Sleeping Slimes" 
         });
+        this.player.setScene(this);
     }
     /**
      * Initializes the viewport
