@@ -7,4 +7,8 @@ export const HW3Controls = {
     JUMP: "JUMP",
     ATTACK: "ATTACK",
     FLY: "FLY",
+    INF_FUEL: "INF_FUEL",
+    INF_HEALTH: "INF_HEALTH",
+    LEVEL_ONE: "LEVEL_ONE",
+    LEVEL_TWO: "LEVEL_TWO"
 } as const;

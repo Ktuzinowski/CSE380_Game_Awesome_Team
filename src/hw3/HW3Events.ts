@@ -29,5 +29,9 @@ export const HW3Events = {
     // Player bounced on Painful Slime
     BOUNCED_ON_PAIN: "BOUNCED_ON_PAIN",
     
-    PICKED_UP_FUEL: "PICKED_UP_FUEL"
+    PICKED_UP_FUEL: "PICKED_UP_FUEL",
+
+    INFINITE_FUEL_TOGGLE: "INFINITE_FUEL_TOGGLE",
+
+    INFINITE_HEALTH_TOGGLE: "INFINITE_HEALTH_TOGGLE"
 } as const;

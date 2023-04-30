@@ -5,6 +5,9 @@ import RenderingManager from "../../Wolfie2D/Rendering/RenderingManager";
 import SceneManager from "../../Wolfie2D/Scene/SceneManager";
 import Viewport from "../../Wolfie2D/SceneGraph/Viewport";
 import JoeLevel1 from "./JoeLevel1";
+import Input from "../../Wolfie2D/Input/Input";
+import { HW3Controls } from "../HW3Controls";
+import { HW3Events } from "../HW3Events";
 
 /**
  * The first level for HW4 - should be the one with the grass and the clouds.
@@ -117,6 +120,22 @@ export default class Level1 extends HW3Level {
         super.startScene();
         // Set the next level to be Level2
         this.nextLevel = JoeLevel1;
+    }
+
+    public updateScene(deltaT: number) {
+        if (Input.isPressed(HW3Controls.LEVEL_TWO)) {
+            this.sceneManager.changeToScene(JoeLevel1);     
+        }
+        else if (Input.isPressed(HW3Controls.INF_FUEL)) {
+            this.emitter.fireEvent(HW3Events.INFINITE_FUEL_TOGGLE);
+        } 
+        else if (Input.isPressed(HW3Controls.INF_HEALTH)) {
+            this.emitter.fireEvent(HW3Events.INFINITE_HEALTH_TOGGLE);
+        }
+        // Handle all game events
+        while (this.receiver.hasNextEvent()) {
+            this.handleEvent(this.receiver.getNextEvent());
+        }
     }
 
     /**
