@@ -94,7 +94,9 @@ export default class PlayerController extends StateMachineAI {
 
         this.weapon = options.weaponSystem;
 
-        this.tilemap = this.owner.getScene().getTilemap(options.tilemap) as OrthogonalTilemap;
+        this.tilemap = this.owner.getScene().getTilemap("Sleeping Slimes") as OrthogonalTilemap;
+        console.log("These are the sceneOptions" + this.owner.getScene().sceneOptions)
+        console.log("This is the tilemap + "  + this.tilemap);
         this.speed = 400;
         this.velocity = Vec2.ZERO;
 
@@ -207,9 +209,6 @@ export default class PlayerController extends StateMachineAI {
                 break;
             }
             case HW3Events.BOUNCED_ON_SLIME: {
-                console.log("This is bouncy...")
-                console.log(event.data.get("node"))
-                console.log(event.data.get("other"))
                 if (this.slimeBounceTimer.getCurrentStateOfTimer() === TimerState.ACTIVE) {
                     return;
                 } else {

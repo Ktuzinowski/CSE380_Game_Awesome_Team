@@ -37,9 +37,15 @@ export default class Walk extends PlayerState {
             this.finished(PlayerStates.FLY);
         }
         // Otherwise, move the player
-        else {
+        if (!this.owner.onGround && (this.parent.velocity.y > 50 || this.parent.velocity.y < -50)) {
             // Update the vertical velocity of the player
-            this.parent.velocity.y += this.gravity*deltaT; 
+            this.parent.velocity.x = dir.x * this.parent.speed
+            this.owner.move(this.parent.velocity.scaled(deltaT));
+            this.finished(PlayerStates.AIRBORNE);
+        } else {
+            if (!this.owner.onGround) {
+                this.parent.velocity.y += this.gravity*deltaT; 
+            }
             this.parent.velocity.x = dir.x * this.parent.speed
             this.owner.move(this.parent.velocity.scaled(deltaT));
         }
