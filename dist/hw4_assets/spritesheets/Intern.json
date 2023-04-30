@@ -21,7 +21,7 @@
         },
         {
             "name": "DYING",
-            "frames": [ {"index": 18, "duration": 4}, {"index": 19, "duration": 4}, {"index": 20, "duration": 4}, {"index": 21, "duration": 4}, {"index": 22, "duration": 4}, {"index": 23, "duration": 5} ]
+            "frames": [ {"index": 18, "duration": 5}, {"index": 19, "duration": 7}, {"index": 20, "duration": 7}, {"index": 21, "duration": 7}, {"index": 22, "duration": 4}, {"index": 23, "duration": 7} ]
         },
         {
             "name": "DEAD",

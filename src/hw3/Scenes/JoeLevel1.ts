@@ -5,14 +5,12 @@ import HW3Level, { HW3Layers } from "./HW3Level";
 import Viewport from "../../Wolfie2D/SceneGraph/Viewport";
 import RenderingManager from "../../Wolfie2D/Rendering/RenderingManager";
 import SceneManager from "../../Wolfie2D/Scene/SceneManager";
-import Level1 from "./HW3Level1";
-import JoeLevel2 from "./JoeLevel2";
-import Sprite from "../../Wolfie2D/Nodes/Sprites/Sprite";
-import AIManager from "../../Wolfie2D/AI/AIManager";
 import { HW3PhysicsGroups } from "../HW3PhysicsGroups";
 import { HW3Events } from "../HW3Events";
-import GameEvent from "../../Wolfie2D/Events/GameEvent";
 import MainMenu from "./MainMenu";
+import { HW3Controls } from "../HW3Controls";
+import Input from "../../Wolfie2D/Input/Input";
+import Level1 from "./HW3Level1";
 /**
  * The second level for HW4. It should be the goose dungeon / cave.
  */
@@ -35,6 +33,16 @@ export default class JoeLevel1 extends HW3Level {
 
     public static readonly JUMP_AUDIO_KEY = "PLAYER_JUMP";
     public static readonly JUMP_AUDIO_PATH = "hw4_assets/sounds/jump.wav";
+    public static readonly PORTAL_AUDIO_KEY = "PORTAL_AUDIO_KEY";
+    public static readonly PORTAL_AUDIO_PATH = "hw4_assets/sounds/VacumeCleaner.wav"
+    public static readonly PAINFUL_SLIME_BOUNCE_AUDIO_KEY ="PAINFUL_SLIME_BOUNCE_AUDIO_KEY";
+    public static readonly PAINFUL_SLIME_BOUNCE_AUDIO_PATH = "hw4_assets/sounds/PainfulSlimeBounce.wav"
+    public static readonly SLIME_BOUNCE_AUDIO_KEY = "SLIME_BOUNCE_AUDIO_KEY"
+    public static readonly SLIME_BOUNCE_AUDIO_PATH = "hw4_assets/sounds/SlimeBounce.wav"
+    public static readonly DEATH_AUDIO_KEY = "DEATH_AUDIO_KEY";
+    public static readonly DEATH_AUDIO_PATH = "hw4_assets/sounds/Death.wav"
+    public static readonly FUEL_PACK_KEY = "FUEL_PACK_KEY";
+    public static readonly FUEL_PACK_PATH = "hw4_assets/sounds/Fuelpack.mp3";
 
     public static readonly TILE_DESTROYED_KEY = "TILE_DESTROYED";
     public static readonly TILE_DESTROYED_PATH = "hw4_assets/sounds/switch.wav";
@@ -57,14 +65,19 @@ export default class JoeLevel1 extends HW3Level {
         this.fuelpackKey = JoeLevel1.FUELPACK_KEY;
 
         // Set the key for the player's sprite
-        this.playerSpriteKey = Level1.PLAYER_SPRITE_KEY;
+        this.playerSpriteKey = JoeLevel1.PLAYER_SPRITE_KEY;
         // Set the player's spawn
         this.playerSpawn = JoeLevel1.PLAYER_SPAWN;
 
         // Music and sound
-        this.levelMusicKey = Level1.LEVEL_MUSIC_KEY
-        this.jumpAudioKey = Level1.JUMP_AUDIO_KEY;
-        this.tileDestroyedAudioKey = Level1.TILE_DESTROYED_KEY;
+        this.levelMusicKey = JoeLevel1.LEVEL_MUSIC_KEY
+        this.jumpAudioKey = JoeLevel1.JUMP_AUDIO_KEY;
+        this.tileDestroyedAudioKey = JoeLevel1.TILE_DESTROYED_KEY;
+        this.portalAudioKey = JoeLevel1.PORTAL_AUDIO_KEY;
+        this.painfulSlimeBounceAudioKey = JoeLevel1.PAINFUL_SLIME_BOUNCE_AUDIO_KEY;
+        this.slimeBounceAudioKey = JoeLevel1.SLIME_BOUNCE_AUDIO_KEY;
+        this.deathAudioKey = JoeLevel1.DEATH_AUDIO_KEY;
+        this.fuelpackAudioKey = JoeLevel1.FUEL_PACK_KEY;
 
         // Level end size and position
         this.levelEndPosition = new Vec2(32, 216).mult(this.tilemapScale);
@@ -76,7 +89,7 @@ export default class JoeLevel1 extends HW3Level {
     public loadScene(): void {
         // Load in the tilemap
         this.load.tilemap(this.tilemapKey, JoeLevel1.TILEMAP_PATH);
-        this.load.spritesheet(this.playerSpriteKey, Level1.PLAYER_SPRITE_PATH);
+        this.load.spritesheet(this.playerSpriteKey, JoeLevel1.PLAYER_SPRITE_PATH);
         this.load.image(this.fuelpackKey, JoeLevel1.FUELPACK_PATH)
         this.load.object("Fuelpacks1", "hw4_assets/Fuelpacks1.json");
         this.load.image("fuelpack", "hw4_assets/fuelpack.png");
@@ -111,23 +124,22 @@ export default class JoeLevel1 extends HW3Level {
         this.nextLevel = MainMenu;
         //this.receiver.subscribe(HW3Events.PICKED_UP_FUEL);
     }
-    /*
     public updateScene(deltaT: number) {
+        if (Input.isPressed(HW3Controls.LEVEL_ONE)) {
+            this.sceneManager.changeToScene(Level1)
+        }
+        else if (Input.isPressed(HW3Controls.INF_FUEL)) {
+            this.emitter.fireEvent(HW3Events.INFINITE_FUEL_TOGGLE);
+        } 
+        else if (Input.isPressed(HW3Controls.INF_HEALTH)) {
+            this.emitter.fireEvent(HW3Events.INFINITE_HEALTH_TOGGLE);
+        }
         // Handle all game events
         while (this.receiver.hasNextEvent()) {
             this.handleEvent(this.receiver.getNextEvent());
         }
     }
-    
-    protected handleEvent(event: GameEvent): void {
-        switch (event.type) {
-            case HW3Events.PICKED_UP_FUEL: {
-                
-                break;
-            }
-        }
-    }
-    */
+
     protected initializeViewport(): void {
         super.initializeViewport();
         this.viewport.setBounds(16, 16, 800, 1600);

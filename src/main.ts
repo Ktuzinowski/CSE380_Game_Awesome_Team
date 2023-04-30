@@ -13,7 +13,11 @@ import { HW3Controls } from "./hw3/HW3Controls";
             {name: HW3Controls.MOVE_LEFT, keys: ["a"]},
             {name: HW3Controls.MOVE_RIGHT, keys: ["d"]},
             {name: HW3Controls.JUMP, keys: ["space"]},
-            {name: HW3Controls.FLY, keys: ["w"]},
+            {name: HW3Controls.FLY, keys: ["w", "space"]},
+            {name: HW3Controls.INF_FUEL, keys: ["f"]},
+            {name: HW3Controls.INF_HEALTH, keys: ["h"]},
+            {name: HW3Controls.LEVEL_ONE, keys: ["1"]},
+            {name: HW3Controls.LEVEL_TWO, keys: ["2"]}
         ],
         useWebGL: false,                        // Tell the game we want to use webgl
         showDebug: false                       // Whether to show debug messages. You can change this to true if you want

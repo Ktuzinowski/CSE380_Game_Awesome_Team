@@ -8,6 +8,7 @@ import Layer from "../../Wolfie2D/Scene/Layer";
 import Scene from "../../Wolfie2D/Scene/Scene";
 import Color from "../../Wolfie2D/Utils/Color";
 import Level1 from "./HW3Level1";
+import Level2 from "./JoeLevel1";
 
 
 // Need to start adding layers
@@ -356,7 +357,7 @@ export default class MainMenu extends Scene {
         const header = <Label>this.add.uiElement(UIElementType.LABEL, MainMenuLayer.CHEATCODES, {position: new Vec2(size.x, size.y - 150), text: "Cheat Codes"});
         header.textColor = Color.WHITE;
 
-        const b2 = <Label>this.add.uiElement(UIElementType.LABEL, MainMenuLayer.CHEATCODES, {position: new Vec2(size.x, size.y - 40), text: `For Cheat Codes, type in Pok3mon**89 to enter a command for a cheat.`});
+        const b2 = <Label>this.add.uiElement(UIElementType.LABEL, MainMenuLayer.CHEATCODES, {position: new Vec2(size.x, size.y - 40), text: `Cheat Codes are initialized while playing the game. Every new level, they get reset.`});
         b2.textColor = Color.WHITE;
         b2.font = "PixelSimple";
 
@@ -364,15 +365,15 @@ export default class MainMenu extends Scene {
         b4.textColor = Color.WHITE;
         b4.font = "PixelSimple";
 
-        const b5 = <Label>this.add.uiElement(UIElementType.LABEL, MainMenuLayer.CHEATCODES, {position: new Vec2(size.x, size.y + 60), text: `# INF - Gain infinite jetpack fuel`});
+        const b5 = <Label>this.add.uiElement(UIElementType.LABEL, MainMenuLayer.CHEATCODES, {position: new Vec2(size.x, size.y + 60), text: `# f - Infinite Jetpack Fuel`});
         b5.textColor = Color.WHITE;
         b5.font = "PixelSimple";
 
-        const b6 = <Label>this.add.uiElement(UIElementType.LABEL, MainMenuLayer.CHEATCODES, {position: new Vec2(size.x, size.y + 105), text: `# FIN - Finish any level with this command`});
+        const b6 = <Label>this.add.uiElement(UIElementType.LABEL, MainMenuLayer.CHEATCODES, {position: new Vec2(size.x, size.y + 105), text: `# h - Infinite Health`});
         b6.textColor = Color.WHITE;
         b6.font = "PixelSimple";
 
-        const b7 = <Label>this.add.uiElement(UIElementType.LABEL, MainMenuLayer.CHEATCODES, {position: new Vec2(size.x, size.y + 150), text: `# BOUNCY - Extra bouncy slimes`});
+        const b7 = <Label>this.add.uiElement(UIElementType.LABEL, MainMenuLayer.CHEATCODES, {position: new Vec2(size.x, size.y + 150), text: `# 1-6 - Numbers for navigating to different levels`});
         b7.textColor = Color.WHITE;
         b7.font = "PixelSimple";
 
@@ -393,7 +394,7 @@ export default class MainMenu extends Scene {
                         this.sceneManager.changeToScene(Level1);
                         break;
                     case 2:
-                        this.sceneManager.changeToScene(Level1);
+                        this.sceneManager.changeToScene(Level2);
                         break;
                     case 3:
                         this.sceneManager.changeToScene(Level1);

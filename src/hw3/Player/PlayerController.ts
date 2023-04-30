@@ -16,6 +16,7 @@ import { HW3Events } from "../HW3Events";
 import Dead from "./PlayerStates/Dead";
 import GameEvent from "../../Wolfie2D/Events/GameEvent";
 import Timer, { TimerState } from "../../Wolfie2D/Timing/Timer";
+import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 
 /**
  * Animation keys for the player spritesheet
@@ -83,6 +84,10 @@ export default class PlayerController extends StateMachineAI {
 
     protected timerForDamageAnimation: Timer;
 
+    // Determining if Player has Infinite Fuel
+    protected infiniteFuel: boolean = false;
+    protected infiniteHealth: boolean = false;
+
     protected deltaT: number = 0;
     protected slimeBounceTimer: Timer = new Timer(100, () => {
         console.log("Finished bounce")
@@ -115,6 +120,8 @@ export default class PlayerController extends StateMachineAI {
         this.receiver.subscribe(HW3Events.BOUNCED_ON_PAIN) // bounce on pain
         this.receiver.subscribe(HW3Events.BOUNCED_ON_SLIME) // bounce on slime
         this.receiver.subscribe(HW3Events.PICKED_UP_FUEL) // picked up fuel
+        this.receiver.subscribe(HW3Events.INFINITE_FUEL_TOGGLE); // infinite fuel being used
+        this.receiver.subscribe(HW3Events.INFINITE_HEALTH_TOGGLE); // toggle for infinite health
         // Start the player in the Idle state
 
         this.fuelTimer = new Timer(300, () => {
@@ -127,7 +134,7 @@ export default class PlayerController extends StateMachineAI {
         this.initialize(PlayerStates.IDLE);
 
         // Timer for Death Animation
-        this.timerForDeathAnimation = new Timer(440,  () => {
+        this.timerForDeathAnimation = new Timer(500,  () => {
             this.owner.animation.play(PlayerAnimations.DEAD);
             this.emitter.fireEvent(HW3Events.PLAYER_DEAD);
         })
@@ -155,7 +162,8 @@ export default class PlayerController extends StateMachineAI {
     public update(deltaT: number): void {
 		super.update(deltaT);
         this.deltaT = deltaT;
-        if (this.timerForDeathAnimation.getCurrentStateOfTimer() === TimerState.ACTIVE) {
+        if (this.timerForDeathAnimation.getCurrentStateOfTimer() === TimerState.ACTIVE || this.timerForDeathAnimation.hasRun()) {
+            console.log("Returning from here...")
             return;
         }
         // Update the rotation to apply the particles velocity vector
@@ -196,6 +204,8 @@ export default class PlayerController extends StateMachineAI {
                     this.healthTimer.start();
                     if (!this.owner.animation.isPlaying(PlayerAnimations.DYING) && !this.owner.animation.isPlaying(PlayerAnimations.DEAD)) {
                         this.owner.animation.playIfNotAlready(PlayerAnimations.DAMAGE);
+                        // Painful Slime Sound
+		                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.owner.getScene().getPainfulSlimeBounceAudioKey(), loop: false, holdReference: false});
                     }
                 }
                 if (this.slimeBounceTimer.getCurrentStateOfTimer() === TimerState.ACTIVE) {
@@ -204,7 +214,7 @@ export default class PlayerController extends StateMachineAI {
                     this.slimeBounceTimer.reset();
                     this.slimeBounceTimer.start();
                 }
-                this.velocity.y *= 2.85;
+                this.velocity.y *= 2.85
                 console.log("This is painful...")
                 break;
             }
@@ -214,6 +224,7 @@ export default class PlayerController extends StateMachineAI {
                 } else {
                     this.slimeBounceTimer.reset();
                     this.slimeBounceTimer.start();
+                    this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.owner.getScene().getSlimeBounceAudioKey(), loop: false, holdReference: false});
                 }
                 this.velocity.y *= 2.85;
                 console.log(this.velocity.y + " SLIME")
@@ -222,6 +233,20 @@ export default class PlayerController extends StateMachineAI {
             }
             case HW3Events.PICKED_UP_FUEL: {
                 this.fuel  += 20;
+                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.owner.getScene().getFuelpackAudio(), loop: false, holdReference: false});
+                break;
+            }
+            case HW3Events.INFINITE_FUEL_TOGGLE: {
+                // get properties to eventually update to max fuel afterwards
+                this.infiniteFuel = !this.infiniteFuel;
+                this._fuel = this.maxFuel
+                this.emitter.fireEvent(HW3Events.FUEL_CHANGE, {curfuel: this.maxFuel, maxfuel: this.maxFuel});
+                break;
+            }
+            case HW3Events.INFINITE_HEALTH_TOGGLE: {
+                this.infiniteHealth = !this.infiniteHealth;
+                this._health = this.maxHealth;
+                this.emitter.fireEvent(HW3Events.HEALTH_CHANGE, {curhp: this.maxHealth, maxhp: this.maxHealth});
                 break;
             }
             // Default: Throw an error! No unhandled events allowed.
@@ -243,6 +268,9 @@ export default class PlayerController extends StateMachineAI {
 
     public get health(): number { return this._health; }
     public set health(health: number) { 
+        if (this.infiniteHealth) {
+            return;
+        }
         this._health = MathUtils.clamp(health, 0, this.maxHealth);
         // When the health changes, fire an event up to the scene.
         this.emitter.fireEvent(HW3Events.HEALTH_CHANGE, {curhp: this.health, maxhp: this.maxHealth});
@@ -250,6 +278,7 @@ export default class PlayerController extends StateMachineAI {
         if (this.health == 0 && this.timerForDeathAnimation.getCurrentStateOfTimer() !== TimerState.ACTIVE) {
             this.owner.animation.play(PlayerAnimations.DYING, false);
             this.timerForDeathAnimation.start();
+            this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.owner.getScene().getDeathAudioKey(), loop: false, holdReference: false});
         }
     }
     public get maxFuel(): number { return this._maxFuel; }
@@ -257,6 +286,9 @@ export default class PlayerController extends StateMachineAI {
 
     public get fuel(): number { return this._fuel; }
     public set fuel(fuel: number) { 
+        if (this.infiniteFuel) {
+            return;
+        }
         this._fuel = MathUtils.clamp(fuel, 0, this.maxFuel);
         this.emitter.fireEvent(HW3Events.FUEL_CHANGE, {curfuel: this.fuel, maxfuel: this.maxFuel});
     }

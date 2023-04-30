@@ -101,6 +101,11 @@ export default abstract class HW3Level extends Scene {
     /** Sound and music */
     protected levelMusicKey: string;
     protected jumpAudioKey: string;
+    protected portalAudioKey: string;
+    protected painfulSlimeBounceAudioKey: string;
+    protected slimeBounceAudioKey: string;
+    protected deathAudioKey: string;
+    protected fuelpackAudioKey: string;
     protected tileDestroyedAudioKey: string;
     //public static readonly FUELPACK_KEY = "FUELPACK"
     //public static readonly FUELPACK_PATH = "hw4_assets/fuelpack.png"
@@ -148,7 +153,7 @@ export default abstract class HW3Level extends Scene {
         this.initializeLevelEnds();
 
         this.levelTransitionTimer = new Timer(500);
-        this.levelEndTimer = new Timer(3000, () => {
+        this.levelEndTimer = new Timer(1500, () => {
             // After the level end timer ends, fade to black and then go to the next scene
             this.levelTransitionScreen.tweens.play("fadeIn");
         });
@@ -283,6 +288,7 @@ export default abstract class HW3Level extends Scene {
     protected handleEnteredLevelEnd(): void {
         // If the timer hasn't run yet, start the end level animation
         if (!this.levelEndTimer.hasRun() && this.levelEndTimer.isStopped()) {
+            this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.portalAudioKey, loop: false, holdReference: false});
             this.levelEndTimer.start();
             this.levelEndLabel.tweens.play("slideIn");
         }
@@ -394,12 +400,13 @@ export default abstract class HW3Level extends Scene {
      * Adds in any necessary UI to the game
      */
     protected initializeUI(): void {
-
         // HP Label
-		this.healthLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(205, 20), text: "HP "});
-		this.healthLabel.size.set(300, 30);
+		this.healthLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(208, 20), text: "HP "});
+		this.healthLabel.size.set(50, 30);
 		this.healthLabel.fontSize = 24;
 		this.healthLabel.font = "Courier";
+        this.healthLabel.textColor = Color.WHITE
+        this.healthLabel.backgroundColor = Color.BLACK;
 
         // HealthBar
 		this.healthBar = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(250, 20), text: ""});
@@ -413,9 +420,11 @@ export default abstract class HW3Level extends Scene {
         
         //jetpack label
 		this.jetpackLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(205, 30), text: "Fuel "});
-		this.jetpackLabel.size.set(300, 30);
+		this.jetpackLabel.size.set(80, 30);
 		this.jetpackLabel.fontSize = 24;
 		this.jetpackLabel.font = "Courier";
+        this.jetpackLabel.textColor = Color.WHITE
+        this.jetpackLabel.backgroundColor = Color.BLACK;
 
         // jetpack
 		this.jetpack = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(250, 30), text: ""});
@@ -590,5 +599,30 @@ export default abstract class HW3Level extends Scene {
     // Get the key of the player's jump audio file
     public getJumpAudioKey(): string {
         return this.jumpAudioKey
+    }
+
+    // Get the key of the portal audio file
+    public getPortalAudioKey(): string {
+        return this.portalAudioKey;
+    }
+
+    // Get the key of the Painful Slime Bounce Audio Key
+    public getPainfulSlimeBounceAudioKey(): string {
+        return this.painfulSlimeBounceAudioKey;
+    }
+
+    // Get the key of the Slime Bounce Audio Key
+    public getSlimeBounceAudioKey(): string {
+        return this.slimeBounceAudioKey;
+    }
+
+    // Get the key for the Death Audio
+    public getDeathAudioKey(): string {
+        return this.deathAudioKey;
+    }
+
+    // Get the key for the Fuelpack Audio
+    public getFuelpackAudio(): string {
+        return this.fuelpackAudioKey;
     }
 }

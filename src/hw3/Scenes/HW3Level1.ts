@@ -5,6 +5,9 @@ import RenderingManager from "../../Wolfie2D/Rendering/RenderingManager";
 import SceneManager from "../../Wolfie2D/Scene/SceneManager";
 import Viewport from "../../Wolfie2D/SceneGraph/Viewport";
 import JoeLevel1 from "./JoeLevel1";
+import Input from "../../Wolfie2D/Input/Input";
+import { HW3Controls } from "../HW3Controls";
+import { HW3Events } from "../HW3Events";
 
 /**
  * The first level for HW4 - should be the one with the grass and the clouds.
@@ -28,6 +31,17 @@ export default class Level1 extends HW3Level {
 
     public static readonly JUMP_AUDIO_KEY = "PLAYER_JUMP";
     public static readonly JUMP_AUDIO_PATH = "hw4_assets/sounds/jump.wav";
+    public static readonly PORTAL_AUDIO_KEY = "PORTAL_AUDIO_KEY";
+    public static readonly PORTAL_AUDIO_PATH = "hw4_assets/sounds/VacumeCleaner.wav"
+    public static readonly PAINFUL_SLIME_BOUNCE_AUDIO_KEY ="PAINFUL_SLIME_BOUNCE_AUDIO_KEY";
+    public static readonly PAINFUL_SLIME_BOUNCE_AUDIO_PATH = "hw4_assets/sounds/PainfulSlimeBounce.wav"
+    public static readonly SLIME_BOUNCE_AUDIO_KEY = "SLIME_BOUNCE_AUDIO_KEY"
+    public static readonly SLIME_BOUNCE_AUDIO_PATH = "hw4_assets/sounds/SlimeBounce.wav"
+    public static readonly DEATH_AUDIO_KEY = "DEATH_AUDIO_KEY";
+    public static readonly DEATH_AUDIO_PATH = "hw4_assets/sounds/Death.wav"
+    public static readonly FUEL_PACK_KEY = "FUEL_PACK_KEY";
+    public static readonly FUEL_PACK_PATH = "hw4_assets/sounds/Fuelpack.mp3";
+
 
     public static readonly TILE_DESTROYED_KEY = "TILE_DESTROYED";
     public static readonly TILE_DESTROYED_PATH = "hw4_assets/sounds/switch.wav";
@@ -56,6 +70,11 @@ export default class Level1 extends HW3Level {
         // Music and sound
         this.levelMusicKey = Level1.LEVEL_MUSIC_KEY
         this.jumpAudioKey = Level1.JUMP_AUDIO_KEY;
+        this.portalAudioKey = Level1.PORTAL_AUDIO_KEY;
+        this.painfulSlimeBounceAudioKey = Level1.PAINFUL_SLIME_BOUNCE_AUDIO_KEY;
+        this.slimeBounceAudioKey = Level1.SLIME_BOUNCE_AUDIO_KEY;
+        this.deathAudioKey = Level1.DEATH_AUDIO_KEY;
+        this.fuelpackAudioKey = Level1.FUEL_PACK_KEY;
         this.tileDestroyedAudioKey = Level1.TILE_DESTROYED_KEY;
 
         // Level end size and position
@@ -74,6 +93,11 @@ export default class Level1 extends HW3Level {
         // Audio and music
         this.load.audio(this.levelMusicKey, Level1.LEVEL_MUSIC_PATH);
         this.load.audio(this.jumpAudioKey, Level1.JUMP_AUDIO_PATH);
+        this.load.audio(this.portalAudioKey, Level1.PORTAL_AUDIO_PATH);
+        this.load.audio(this.painfulSlimeBounceAudioKey, Level1.PAINFUL_SLIME_BOUNCE_AUDIO_PATH);
+        this.load.audio(this.slimeBounceAudioKey, Level1.SLIME_BOUNCE_AUDIO_PATH);
+        this.load.audio(this.deathAudioKey, Level1.DEATH_AUDIO_PATH);
+        this.load.audio(this.fuelpackAudioKey, Level1.FUEL_PACK_PATH);
         this.load.audio(this.tileDestroyedAudioKey, Level1.TILE_DESTROYED_PATH);
     }
 
@@ -84,6 +108,11 @@ export default class Level1 extends HW3Level {
         this.load.keepSpritesheet(this.playerSpriteKey);
         this.load.keepAudio(this.levelMusicKey);
         this.load.keepAudio(this.jumpAudioKey);
+        this.load.keepAudio(this.portalAudioKey);
+        this.load.keepAudio(this.painfulSlimeBounceAudioKey);
+        this.load.keepAudio(this.slimeBounceAudioKey);
+        this.load.keepAudio(this.deathAudioKey);
+        this.load.keepAudio(this.fuelpackAudioKey);
         this.load.keepAudio(this.tileDestroyedAudioKey);
     }
 
@@ -91,6 +120,22 @@ export default class Level1 extends HW3Level {
         super.startScene();
         // Set the next level to be Level2
         this.nextLevel = JoeLevel1;
+    }
+
+    public updateScene(deltaT: number) {
+        if (Input.isPressed(HW3Controls.LEVEL_TWO)) {
+            this.sceneManager.changeToScene(JoeLevel1);     
+        }
+        else if (Input.isPressed(HW3Controls.INF_FUEL)) {
+            this.emitter.fireEvent(HW3Events.INFINITE_FUEL_TOGGLE);
+        } 
+        else if (Input.isPressed(HW3Controls.INF_HEALTH)) {
+            this.emitter.fireEvent(HW3Events.INFINITE_HEALTH_TOGGLE);
+        }
+        // Handle all game events
+        while (this.receiver.hasNextEvent()) {
+            this.handleEvent(this.receiver.getNextEvent());
+        }
     }
 
     /**
