@@ -23,6 +23,7 @@ export default class AnimatedSprite extends Sprite {
     animation: AnimationManager;
 
     constructor(spritesheet: Spritesheet){
+        console.log(spritesheet.name + "YOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
         super(spritesheet.name);
         this.numCols = spritesheet.columns;
         this.numRows = spritesheet.rows;

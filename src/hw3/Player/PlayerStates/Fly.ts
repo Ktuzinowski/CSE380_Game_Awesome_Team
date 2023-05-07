@@ -13,7 +13,7 @@ export default class Fly extends PlayerState {
         // Give the player a burst of upward momentum
         if(this.parent.fuel !== 0) {
             
-        this.parent.fuel -= 1;
+        this.parent.fuel -= 1.4;
         this.parent.velocity.y += -15;
         }
 	}

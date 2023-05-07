@@ -17,6 +17,7 @@ import Dead from "./PlayerStates/Dead";
 import GameEvent from "../../Wolfie2D/Events/GameEvent";
 import Timer, { TimerState } from "../../Wolfie2D/Timing/Timer";
 import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
+import PlayerJetpack from "./PlayerJetpack";
 
 /**
  * Animation keys for the player spritesheet
@@ -79,7 +80,7 @@ export default class PlayerController extends StateMachineAI {
     protected tilemap: OrthogonalTilemap;
     // protected cannon: Sprite;
     protected weapon: PlayerWeapon;
-
+    protected jetpack: PlayerJetpack;
     protected timerForDeathAnimation: Timer;
 
     protected timerForDamageAnimation: Timer;
@@ -93,12 +94,12 @@ export default class PlayerController extends StateMachineAI {
         console.log("Finished bounce")
     })
 
-    
+
     public initializeAI(owner: HW3AnimatedSprite, options: Record<string, any>){
         this.owner = owner;
 
         this.weapon = options.weaponSystem;
-
+        this.jetpack = options.jetpackSystem;
         this.tilemap = this.owner.getScene().getTilemap("Sleeping Slimes") as OrthogonalTilemap;
         console.log("These are the sceneOptions" + this.owner.getScene().sceneOptions)
         console.log("This is the tilemap + "  + this.tilemap);
@@ -107,8 +108,8 @@ export default class PlayerController extends StateMachineAI {
 
         this.health = 10
         this.maxHealth = 10;
-        this.fuel = 100
-        this.maxFuel = 100;
+        this.fuel = 50
+        this.maxFuel = 50;
         // Add the different states the player can be in to the PlayerController 
 		this.addState(PlayerStates.IDLE, new Idle(this, this.owner));
 		this.addState(PlayerStates.RUN, new Run(this, this.owner));
@@ -124,7 +125,7 @@ export default class PlayerController extends StateMachineAI {
         this.receiver.subscribe(HW3Events.INFINITE_HEALTH_TOGGLE); // toggle for infinite health
         // Start the player in the Idle state
 
-        this.fuelTimer = new Timer(300, () => {
+        this.fuelTimer = new Timer(150, () => {
             this.fuel +=3;
         },true);
         this.healthTimer = new Timer(300, () => {
@@ -168,16 +169,18 @@ export default class PlayerController extends StateMachineAI {
         }
         // Update the rotation to apply the particles velocity vector
         this.weapon.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
-
-        // If the player hits the attack button and the weapon system isn't running, restart the system and fire!
-        /*
-        if (Input.isPressed(HW3Controls.ATTACK) && !this.weapon.isSystemRunning()) {
-            // Update the rotation to apply the particles velocity vector
-            this.weapon.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
-            // Start the particle system at the player's current position
-            this.weapon.startSystem(500, 0, this.owner.position);
+        if(Input.isPressed(HW3Controls.ATTACK) && !this.weapon.isSystemRunning()) {
+            this.weapon.startSystem(500,0,this.owner.position)
         }
-        */
+        // If the player hits the attack button and the weapon system isn't running, restart the system and fire!
+        
+        if (Input.isPressed(HW3Controls.FLY) && !this.jetpack.isSystemRunning()) {
+            // Update the rotation to apply the particles velocity vector
+            //this.weapon.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
+            // Start the particle system at the player's current position
+            this.jetpack.startSystem(500, 0, this.owner.position);
+        }
+        
         /*
             This if-statement will place a tile wherever the user clicks on the screen. I have
             left this here to make traversing the map a little easier, incase you accidently
@@ -232,7 +235,7 @@ export default class PlayerController extends StateMachineAI {
                 break;
             }
             case HW3Events.PICKED_UP_FUEL: {
-                this.fuel  += 20;
+                this.fuel  += 15;
                 this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.owner.getScene().getFuelpackAudio(), loop: false, holdReference: false});
                 break;
             }
