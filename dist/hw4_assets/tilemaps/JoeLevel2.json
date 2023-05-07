@@ -216,7 +216,7 @@
             2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
          "height":100,
          "id":2,
-         "name":"Ground",
+         "name":"Main",
          "opacity":1,
          "properties":[
                 {
@@ -341,6 +341,11 @@
          "name":"Painful Slimes",
          "opacity":1,
          "properties":[
+            {
+               "name":"Collidable",
+               "type":"bool",
+               "value":true
+              },    
                 {
                  "name":"Bounceable",
                  "type":"bool",
@@ -468,6 +473,11 @@
          "name":"Sleeping Slimes",
          "opacity":1,
          "properties":[
+            {
+               "name":"Collidable",
+               "type":"bool",
+               "value":true
+              },    
                 {
                  "name":"Bounceable",
                  "type":"bool",
@@ -495,7 +505,7 @@
               "columns": 4,
               "firstgid": 1,
               "image": "TileSet3.png",
-              "imageheight": 8,
+              "imageheight": 32,
               "imagewidth": 32,
               "margin": 0,
               "name": "TileSet3",
