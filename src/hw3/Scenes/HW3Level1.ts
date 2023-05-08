@@ -8,6 +8,7 @@ import JoeLevel1 from "./JoeLevel1";
 import Input from "../../Wolfie2D/Input/Input";
 import { HW3Controls } from "../HW3Controls";
 import { HW3Events } from "../HW3Events";
+import { HW3PhysicsGroups } from "../HW3PhysicsGroups";
 
 /**
  * The first level for HW4 - should be the one with the grass and the clouds.
@@ -46,11 +47,13 @@ export default class Level1 extends HW3Level {
     public static readonly FUEL_PACK_KEY = "FUEL_PACK_KEY";
     public static readonly FUEL_PACK_PATH = "hw4_assets/sounds/Fuelpack.mp3";
 
+    public static readonly FUELPACK_KEY = "FUELPACK"
+    public static readonly FUELPACK_PATH = "hw4_assets/fuelpack.png"
+
+
 
     public static readonly TILE_DESTROYED_KEY = "TILE_DESTROYED";
     public static readonly TILE_DESTROYED_PATH = "hw4_assets/sounds/switch.wav";
-    //public static readonly FUELPACK_KEY = "FUELPACK"
-    //public static readonly FUELPACK_PATH = "hw4_assets/fuelpack.png"
 
     public static readonly LEVEL_END = new AABB(new Vec2(224, 232), new Vec2(1400, 16));
 
@@ -63,20 +66,18 @@ export default class Level1 extends HW3Level {
         this.destructibleLayerKey = Level1.DESTRUCTIBLE_LAYER_KEY;
         this.sleepingSlimesLayerKey = Level1.SLEEPING_SLIMES_LAYER_KEY;
         this.painfulSlimesLayerKey = Level1.PAINFUL_SLIMES_LAYER_KEY;
-        //this.fuelpackKey = Level1.FUELPACK_KEY;
         this.wallsLayerKey = Level1.WALLS_LAYER_KEY;
-        console.log(this.painfulSlimes);
         // Set the key for the player's sprite
         this.playerSpriteKey = Level1.PLAYER_SPRITE_KEY;
         // Set the player's spawn
         this.playerSpawn = Level1.PLAYER_SPAWN;
 
         // Set the slugma's spawn
-        this.slugmaSpawn = Level1.SLUGMA_SPAWN;
+        //this.slugmaSpawn = Level1.SLUGMA_SPAWN;
         // Set the key for the player's sprite
         this.slugmaSpriteKey = Level1.SLUGMA_SPRITE_KEY;
 
-
+        this.fuelpackKey = Level1.FUELPACK_KEY;
         // Music and sound
         this.levelMusicKey = Level1.LEVEL_MUSIC_KEY
         this.jumpAudioKey = Level1.JUMP_AUDIO_KEY;
@@ -103,6 +104,13 @@ export default class Level1 extends HW3Level {
         this.load.spritesheet(this.playerSpriteKey, Level1.PLAYER_SPRITE_PATH);
         // Load in the slugma's sprite
         this.load.spritesheet(this.slugmaSpriteKey, Level1.SLUGMA_SPRITE_PATH);
+        this.load.object("AI_SLUGMA", "hw4_assets/ActualLevelOneAI.json")
+
+        // FUELPACKS
+        this.load.image(this.fuelpackKey, Level1.FUELPACK_PATH)
+        this.load.object("FuelpacksActual", "hw4_assets/ActualLevelOneFuelpacks.json");
+        this.load.image("fuelpack", "hw4_assets/fuelpack.png");
+
         // Audio and music
         this.load.audio(this.levelMusicKey, Level1.LEVEL_MUSIC_PATH);
         this.load.audio(this.jumpAudioKey, Level1.JUMP_AUDIO_PATH);
@@ -131,6 +139,31 @@ export default class Level1 extends HW3Level {
 
     public startScene(): void {
         super.startScene();
+        let Fuelpacks =  this.load.getObject("FuelpacksActual")
+        this.fuelpacks1 = new Array(3)
+        for(let i = 0; i < this.fuelpacks1.length; i++) {
+            this.fuelpacks1[i] = this.add.sprite(Level1.FUELPACK_KEY, HW3Layers.PRIMARY);
+            this.fuelpacks1[i].visible = true;
+            //let collider = new AABB(Vec2.ZERO, JoeLevel1.fuelpacks1[i].sizeWithZoom);
+            //JoeLevel1.fuelpacks1[i].setCollisionShape(collider);
+            this.fuelpacks1[i].setGroup(HW3PhysicsGroups.FUELPACKS);
+            this.fuelpacks1[i].addPhysics()
+            
+            this.fuelpacks1[i].setTrigger(HW3PhysicsGroups.PLAYER, HW3Events.PICKED_UP_FUEL,null);
+            console.log("this is the id of this fuelpack" + this.fuelpacks1[i].id)
+
+            this.fuelpacks1[i].position.set(Fuelpacks.items[i][0]*2, Fuelpacks.items[i][1]*2-2)
+        }
+
+        // Adding AIs into the layers
+        let AI_SLUGMAS =  this.load.getObject("AI_SLUGMA")
+        this.ai_characters = new Array(1)
+        for(let i = 0; i < this.ai_characters.length; i++) {
+            const spriteOfSlugma = this.add.animatedSprite(Level1.SLUGMA_SPRITE_KEY, HW3Layers.PRIMARY);
+            spriteOfSlugma.visible = true;
+            const spawnPointOfSlugma: Vec2 = new Vec2(AI_SLUGMAS.items[i][0]*2, AI_SLUGMAS.items[i][1]*2-2)
+            this.ai_characters[i] = this.initializeSlugma(spawnPointOfSlugma, spriteOfSlugma)
+        }        
         // Set the next level to be Level2
         // Add a background to the scene
         this.addParallaxLayer("bg", new Vec2(0.5, 1), -1);

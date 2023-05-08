@@ -117,9 +117,11 @@ export default abstract class HW3Level extends Scene {
     protected deathAudioKey: string;
     protected fuelpackAudioKey: string;
     protected tileDestroyedAudioKey: string;
+    protected fuelpackKey: string;
     //public static readonly FUELPACK_KEY = "FUELPACK"
     //public static readonly FUELPACK_PATH = "hw4_assets/fuelpack.png"
     protected fuelpacks1: Array<Sprite>;
+    protected ai_characters: Array<Sprite>;
 
     public constructor(viewport: Viewport, sceneManager: SceneManager, renderingManager: RenderingManager, options: Record<string, any>) {
         super(viewport, sceneManager, renderingManager, {...options, physics: {
@@ -128,14 +130,15 @@ export default abstract class HW3Level extends Scene {
                 HW3PhysicsGroups.PLAYER, 
                 HW3PhysicsGroups.SLUGMA,
                 HW3PhysicsGroups.PLAYER_WEAPON, 
-                
+                HW3PhysicsGroups.FUELPACKS
             ],
             collisions:
             [
-                [0, 1, 1, 1],
-                [1, 0, 0, 1],
-                [1, 0, 0, 1],
-                [1, 0, 0, 1],
+                [0, 1, 1, 1, 1],
+                [1, 0, 0, 1, 1],
+                [1, 0, 0, 1, 1],
+                [1, 0, 0, 1, 1],
+                [1, 0, 0, 1, 1]
             ]
         }});
         this.add = new HW3FactoryManager(this, this.tilemaps);
@@ -153,9 +156,6 @@ export default abstract class HW3Level extends Scene {
 
         // Initialize the player 
         this.initializePlayer(this.playerSpriteKey);
-
-        // Initialize the slugma
-        this.initializeSlugma(this.slugmaSpriteKey);
 
         // Initialize the viewport - this must come after the player has been initialized
         this.initializeViewport();
@@ -567,25 +567,24 @@ export default abstract class HW3Level extends Scene {
      * Initializes the player, setting the player's initial position to the given position.
      * @param position the player's spawn position
      */
-    protected initializeSlugma(key: string): void {
+    public initializeSlugma(slugmaSpawnPoint: Vec2, slugmaAnimatedSprite: AnimatedSprite): AnimatedSprite {
         // if (this.playerWeaponSystem === undefined) {
         //     throw new Error("Player weapon system must be initialized before initializing the player!");
         // }
-        if (this.slugmaSpawn === undefined) {
-            throw new Error("Player spawn must be set before initializing the player!");
-        }
+        // if (this.slugmaSpawn === undefined) {
+        //     throw new Error("Player spawn must be set before initializing the player!");
+        // }
 
         // Add the slugma to the scene
-        this.slugma = this.add.animatedSprite(key, HW3Layers.PRIMARY);
-        this.slugma.scale.set(0.25, 0.25);
-        this.slugma.position.copy(this.slugmaSpawn);
+        slugmaAnimatedSprite.scale.set(0.25, 0.25);
+        slugmaAnimatedSprite.position.copy(slugmaSpawnPoint);
         
         // Give the player physics and setup collision groups and triggers for the player
-        this.slugma.addPhysics(new AABB(this.slugma.position.clone(), this.slugma.boundary.getHalfSize().clone()));
-        this.slugma.setGroup(HW3PhysicsGroups.SLUGMA);
+        slugmaAnimatedSprite.addPhysics(new AABB(slugmaAnimatedSprite.position.clone(), slugmaAnimatedSprite.boundary.getHalfSize().clone()));
+        slugmaAnimatedSprite.setGroup(HW3PhysicsGroups.SLUGMA);
 
         // Give the player a flip animation
-        this.slugma.tweens.add(PlayerTweens.FLIP, {
+        slugmaAnimatedSprite.tweens.add(PlayerTweens.FLIP, {
             startDelay: 0,
             duration: 500,
             effects: [
@@ -598,11 +597,14 @@ export default abstract class HW3Level extends Scene {
             ]
         });
 
-        this.slugma.addAI(SlugmaController, {
+        slugmaAnimatedSprite.addAI(SlugmaController, {
             tilemap: "Sleeping Slimes",
             player: this.player
         })
-        this.slugma.setScene(this);
+        slugmaAnimatedSprite.setScene(this);
+        slugmaAnimatedSprite.setTrigger(HW3PhysicsGroups.PLAYER, HW3Events.BOUNCED_ON_PAIN,null);
+
+        return slugmaAnimatedSprite
     }
     /**
      * Initializes the viewport
