@@ -89,6 +89,9 @@ export default class PlayerController extends StateMachineAI {
     protected infiniteFuel: boolean = false;
     protected infiniteHealth: boolean = false;
 
+    // Lower Boundary Property
+    protected lowerBoundary: number;
+
     protected deltaT: number = 0;
     protected slimeBounceTimer: Timer = new Timer(100, () => {
         console.log("Finished bounce")
@@ -99,6 +102,9 @@ export default class PlayerController extends StateMachineAI {
         this.owner = owner;
 
         this.weapon = options.weaponSystem;
+
+        this.lowerBoundary = options.lowerBoundary;
+
         this.jetpack = options.jetpackSystem;
         this.tilemap = this.owner.getScene().getTilemap("Sleeping Slimes") as OrthogonalTilemap;
         console.log("These are the sceneOptions" + this.owner.getScene().sceneOptions)
@@ -155,6 +161,7 @@ export default class PlayerController extends StateMachineAI {
 		direction.y = (Input.isJustPressed(HW3Controls.JUMP) ? -1 : 0);
 		return direction;
     }
+
     /** 
      * Gets the direction of the mouse from the player's position as a Vec2
      */
@@ -163,6 +170,17 @@ export default class PlayerController extends StateMachineAI {
     public update(deltaT: number): void {
 		super.update(deltaT);
         this.deltaT = deltaT;
+        if (this.lowerBoundary) {
+            if (this.owner.position.y > 400 && (!(this.timerForDeathAnimation.getCurrentStateOfTimer() === TimerState.ACTIVE) || this.timerForDeathAnimation.hasRun())) {
+                this.owner.animation.play(PlayerAnimations.DYING, false);
+                this.timerForDeathAnimation.start();
+                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.owner.getScene().getDeathAudioKey(), loop: false, holdReference: false});
+            }
+        }
+        this.emitter.fireEvent(HW3Events.UPDATE_AI_BASED_ON_PLAYER_POSITION, {
+            xPosition: this.owner.position.x,
+            yPosition: this.owner.position.y
+        })
         if (this.timerForDeathAnimation.getCurrentStateOfTimer() === TimerState.ACTIVE || this.timerForDeathAnimation.hasRun()) {
             console.log("Returning from here...")
             return;

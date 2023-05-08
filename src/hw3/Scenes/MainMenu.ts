@@ -9,6 +9,7 @@ import Scene from "../../Wolfie2D/Scene/Scene";
 import Color from "../../Wolfie2D/Utils/Color";
 import Level1 from "./JoeLevel2";
 import Level2 from "./JoeLevel1";
+import KevinLevel from './HW3Level1'
 
 
 // Need to start adding layers
@@ -397,7 +398,7 @@ export default class MainMenu extends Scene {
                         this.sceneManager.changeToScene(Level2);
                         break;
                     case 3:
-                        this.sceneManager.changeToScene(Level1);
+                        this.sceneManager.changeToScene(KevinLevel);
                         break;
                     default: 
                     this.sceneManager.changeToScene(Level1);

@@ -26,6 +26,7 @@ import HW3FactoryManager from "../Factory/HW3FactoryManager";
 import MainMenu from "./MainMenu";
 import Particle from "../../Wolfie2D/Nodes/Graphics/Particle";
 import Sprite from "../../Wolfie2D/Nodes/Sprites/Sprite";
+import SlugmaController from "../Slugma/SlugmaController";
 import PlayerJetpack from "../Player/PlayerJetpack";
 import { ParticleType } from "../../Wolfie2D/Rendering/Animations/ParticleSystem";
 
@@ -33,6 +34,8 @@ import { ParticleType } from "../../Wolfie2D/Rendering/Animations/ParticleSystem
  * A const object for the layer names
  */
 export const HW3Layers = {
+    // The background layer
+    BACKGROUND: "bg",
     // The primary layer
     PRIMARY: "PRIMARY",
     // The UI layer
@@ -62,6 +65,13 @@ export default abstract class HW3Level extends Scene {
     protected player: AnimatedSprite;
     /** The player's spawn position */
     protected playerSpawn: Vec2;
+
+    /** The key for the Slugma's animated sprite */
+    protected slugmaSpriteKey: string;
+    /** The animated sprite that is the slugma */
+    protected slugma: AnimatedSprite;
+    /** The slugma's spawn position */
+    protected slugmaSpawn: Vec2;
 
     private healthLabel: Label;
 	private healthBar: Label;
@@ -112,24 +122,29 @@ export default abstract class HW3Level extends Scene {
     protected deathAudioKey: string;
     protected fuelpackAudioKey: string;
     protected tileDestroyedAudioKey: string;
+    protected fuelpackKey: string;
     //public static readonly FUELPACK_KEY = "FUELPACK"
     //public static readonly FUELPACK_PATH = "hw4_assets/fuelpack.png"
     protected fuelpacks1: Array<Sprite>;
+    protected ai_characters: Array<Sprite>;
+    protected lowerBoundary: number = undefined;
 
     public constructor(viewport: Viewport, sceneManager: SceneManager, renderingManager: RenderingManager, options: Record<string, any>) {
         super(viewport, sceneManager, renderingManager, {...options, physics: {
             groupNames: [
                 HW3PhysicsGroups.GROUND, 
                 HW3PhysicsGroups.PLAYER, 
+                HW3PhysicsGroups.SLUGMA,
                 HW3PhysicsGroups.PLAYER_WEAPON, 
-                HW3PhysicsGroups.DESTRUCTABLE,
+                HW3PhysicsGroups.FUELPACKS
             ],
             collisions:
             [
-                [0, 1, 1, 0],
-                [1, 0, 0, 1],
-                [1, 0, 0, 1],
-                [0, 1, 1, 0],
+                [0, 1, 1, 1, 1],
+                [1, 0, 0, 1, 1],
+                [1, 0, 0, 1, 1],
+                [1, 0, 0, 1, 1],
+                [1, 0, 0, 1, 1]
             ]
         }});
         this.add = new HW3FactoryManager(this, this.tilemaps);
@@ -218,7 +233,7 @@ export default abstract class HW3Level extends Scene {
                 this.handleJetpackChange(event.data.get("curfuel"), event.data.get("maxfuel"));
                 break;
             }
-            
+
             case HW3Events.PLAYER_DEAD: {
                 this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: this.levelMusicKey});
                 this.sceneManager.changeToScene(MainMenu);
@@ -379,13 +394,15 @@ export default abstract class HW3Level extends Scene {
             
         this.painfulSlimes.setGroup(HW3PhysicsGroups.PAINFUL)
         this.painfulSlimes.addPhysics()
+        this.sleepingSlimes.setGroup(HW3PhysicsGroups.BOUNCABLE)
+        this.sleepingSlimes.addPhysics()
         
         // bouncing on painful slimes
         this.painfulSlimes.setTrigger(HW3PhysicsGroups.PLAYER, HW3Events.BOUNCED_ON_PAIN, null)
         }
-        this.sleepingSlimes.setGroup(HW3PhysicsGroups.BOUNCABLE)
-        this.sleepingSlimes.addPhysics()
+
         // bouncing on sleepy slimes
+        this.sleepingSlimes.setTrigger(HW3PhysicsGroups.SLUGMA, HW3Events.BOUNCED_ON_SLIME_AI, null)
         this.sleepingSlimes.setTrigger(HW3PhysicsGroups.PLAYER, HW3Events.BOUNCED_ON_SLIME, null)
     }
     /**
@@ -552,35 +569,57 @@ export default abstract class HW3Level extends Scene {
                 }
             ]
         });
-        // // Give the player a death animation
-        // this.player.tweens.add(PlayerTweens.DEATH, {
-        //     startDelay: 0,
-        //     duration: 500,
-        //     effects: [
-        //         {
-        //             property: "rotation",
-        //             start: 0,
-        //             end: Math.PI,
-        //             ease: EaseFunctionType.IN_OUT_QUAD
-        //         },
-        //         {
-        //             property: "alpha",
-        //             start: 1,
-        //             end: 0,
-        //             ease: EaseFunctionType.IN_OUT_QUAD
-        //         }
-        //     ],
-        //     onEnd: HW3Events.PLAYER_DEAD
-        // });
 
-        // Give the player it's AI
         this.player.addAI(PlayerController, { 
+            lowerBoundary: this.lowerBoundary,
             weaponSystem: this.playerWeaponSystem,
             jetpackSystem: this.playerJetpackSystem,
             tilemap: "Sleeping Slimes" 
-            
         });
         this.player.setScene(this);
+    }
+    /**
+     * Initializes the player, setting the player's initial position to the given position.
+     * @param position the player's spawn position
+     */
+    public initializeSlugma(slugmaSpawnPoint: Vec2, slugmaAnimatedSprite: AnimatedSprite): AnimatedSprite {
+        // if (this.playerWeaponSystem === undefined) {
+        //     throw new Error("Player weapon system must be initialized before initializing the player!");
+        // }
+        // if (this.slugmaSpawn === undefined) {
+        //     throw new Error("Player spawn must be set before initializing the player!");
+        // }
+
+        // Add the slugma to the scene
+        slugmaAnimatedSprite.scale.set(0.25, 0.25);
+        slugmaAnimatedSprite.position.copy(slugmaSpawnPoint);
+        
+        // Give the player physics and setup collision groups and triggers for the player
+        slugmaAnimatedSprite.addPhysics(new AABB(slugmaAnimatedSprite.position.clone(), slugmaAnimatedSprite.boundary.getHalfSize().clone()));
+        slugmaAnimatedSprite.setGroup(HW3PhysicsGroups.SLUGMA);
+
+        // Give the player a flip animation
+        slugmaAnimatedSprite.tweens.add(PlayerTweens.FLIP, {
+            startDelay: 0,
+            duration: 500,
+            effects: [
+                {
+                    property: "rotation",
+                    start: 0,
+                    end: 2*Math.PI,
+                    ease: EaseFunctionType.IN_OUT_QUAD
+                }
+            ]
+        });
+
+        slugmaAnimatedSprite.addAI(SlugmaController, {
+            tilemap: "Sleeping Slimes",
+            player: this.player
+        })
+        slugmaAnimatedSprite.setScene(this);
+        slugmaAnimatedSprite.setTrigger(HW3PhysicsGroups.PLAYER, HW3Events.BOUNCED_ON_PAIN,null);
+
+        return slugmaAnimatedSprite
     }
     /**
      * Initializes the viewport

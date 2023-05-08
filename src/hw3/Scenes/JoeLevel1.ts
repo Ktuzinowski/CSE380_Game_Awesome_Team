@@ -49,7 +49,6 @@ export default class JoeLevel1 extends HW3Level {
     public static readonly FUELPACK_KEY = "FUELPACK"
     public static readonly FUELPACK_PATH = "hw4_assets/fuelpack.png"
     public static readonly LEVEL_END = new AABB(new Vec2(224, 232), new Vec2(24, 16));
-    protected fuelpackKey: string;
     
     public constructor(viewport: Viewport, sceneManager: SceneManager, renderingManager: RenderingManager, options: Record<string, any>) {
         super(viewport, sceneManager, renderingManager, options);
