@@ -4,7 +4,7 @@ import HW3Level from "./HW3Level";
 import RenderingManager from "../../Wolfie2D/Rendering/RenderingManager";
 import SceneManager from "../../Wolfie2D/Scene/SceneManager";
 import Viewport from "../../Wolfie2D/SceneGraph/Viewport";
-import JoeLevel1 from "./JoeLevel1";
+import SamLevel2 from "./SamLevel2";
 import Input from "../../Wolfie2D/Input/Input";
 import { HW3Controls } from "../HW3Controls";
 import { HW3Events } from "../HW3Events";
@@ -18,7 +18,7 @@ export default class SamLevel1 extends HW3Level {
     public static readonly PLAYER_SPRITE_KEY = "PLAYER_SPRITE_KEY";
     public static readonly PLAYER_SPRITE_PATH = "hw4_assets/spritesheets/Intern.json";
 
-    public static readonly TILEMAP_KEY = "LEVEL1";
+    public static readonly TILEMAP_KEY = "LEVEL3";
     public static readonly TILEMAP_PATH = "hw4_assets/tilemaps/SamLevelUno.json";
     public static readonly TILEMAP_SCALE = new Vec2(2, 2);
     public static readonly DESTRUCTIBLE_LAYER_KEY = "Destructable";
@@ -78,7 +78,7 @@ export default class SamLevel1 extends HW3Level {
         this.tileDestroyedAudioKey = SamLevel1.TILE_DESTROYED_KEY;
 
         // Level end size and position
-        this.levelEndPosition = new Vec2(1312, 1508);
+        this.levelEndPosition = new Vec2(1285,1440);
         this.levelEndHalfSize = new Vec2(32, 32).mult(this.tilemapScale);
     }
 
@@ -119,12 +119,12 @@ export default class SamLevel1 extends HW3Level {
     public startScene(): void {
         super.startScene();
         // Set the next level to be Level2
-        this.nextLevel = JoeLevel1;
+        this.nextLevel = SamLevel2;
     }
 
     public updateScene(deltaT: number) {
         if (Input.isPressed(HW3Controls.LEVEL_TWO)) {
-            this.sceneManager.changeToScene(JoeLevel1);     
+            this.sceneManager.changeToScene(SamLevel2);     
         }
         else if (Input.isPressed(HW3Controls.INF_FUEL)) {
             this.emitter.fireEvent(HW3Events.INFINITE_FUEL_TOGGLE);
