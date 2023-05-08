@@ -78,7 +78,7 @@ export default class SamLevel1 extends HW3Level {
         this.tileDestroyedAudioKey = SamLevel1.TILE_DESTROYED_KEY;
 
         // Level end size and position
-        this.levelEndPosition = new Vec2(64, 64).mult(this.tilemapScale);
+        this.levelEndPosition = new Vec2(1312, 1508);
         this.levelEndHalfSize = new Vec2(32, 32).mult(this.tilemapScale);
     }
 
