@@ -9,7 +9,7 @@ import { HW3PhysicsGroups } from "../HW3PhysicsGroups";
 /**
  * The particle system used for the player's weapon
  */
-export default class PlayerWeapon extends ParticleSystem {
+export default class PlayerJetpack extends ParticleSystem {
 
     /**
      * The rotation (in radians) to apply to the velocity vector of the particles
@@ -37,7 +37,7 @@ export default class PlayerWeapon extends ParticleSystem {
         particle.vel = RandUtils.randVec(-32, 32, 100, 200);
         // Rotate the particle's velocity vector
         particle.vel.rotateCCW(this._rotation);
-        particle.color = Color.BLUE;
+        particle.color = Color.RED;
 
         // Give the particle tweens
         particle.tweens.add("active", {

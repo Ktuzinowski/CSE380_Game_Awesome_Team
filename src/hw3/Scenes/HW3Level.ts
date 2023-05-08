@@ -27,6 +27,8 @@ import MainMenu from "./MainMenu";
 import Particle from "../../Wolfie2D/Nodes/Graphics/Particle";
 import Sprite from "../../Wolfie2D/Nodes/Sprites/Sprite";
 import SlugmaController from "../Slugma/SlugmaController";
+import PlayerJetpack from "../Player/PlayerJetpack";
+import { ParticleType } from "../../Wolfie2D/Rendering/Animations/ParticleSystem";
 
 /**
  * A const object for the layer names
@@ -54,6 +56,8 @@ export default abstract class HW3Level extends Scene {
 
     /** The particle system used for the player's weapon */
     protected playerWeaponSystem: PlayerWeapon
+    protected playerJetpackSystem: PlayerJetpack
+
     /** The key for the player's animated sprite */
     protected playerSpriteKey: string;
     /** The animated sprite that is the player */
@@ -517,8 +521,12 @@ export default abstract class HW3Level extends Scene {
      * Initializes the particles system used by the player's weapon.
      */
     protected initializeWeaponSystem(): void {
-        this.playerWeaponSystem = new PlayerWeapon(50, Vec2.ZERO, 1000, 3, 0, 50);
+        this.playerWeaponSystem = new PlayerWeapon(50, Vec2.ZERO, 1000, 3, 0, 50, ParticleType.WEAPON);
+
         this.playerWeaponSystem.initializePool(this, HW3Layers.PRIMARY);
+        
+        this.playerJetpackSystem = new PlayerJetpack(40,Vec2.ZERO,1000,3,0,50, ParticleType.JETPACK);
+        this.playerJetpackSystem.initializePool(this,HW3Layers.PRIMARY)
     }
     /**
      * Initializes the player, setting the player's initial position to the given position.
@@ -527,6 +535,9 @@ export default abstract class HW3Level extends Scene {
     protected initializePlayer(key: string): void {
         if (this.playerWeaponSystem === undefined) {
             throw new Error("Player weapon system must be initialized before initializing the player!");
+        }
+        if(this.playerJetpackSystem === undefined) {
+            throw new Error("jetpack system must be initialized before initializing the player!");
         }
         if (this.playerSpawn === undefined) {
             throw new Error("Player spawn must be set before initializing the player!");
@@ -559,9 +570,10 @@ export default abstract class HW3Level extends Scene {
         });
 
         this.player.addAI(PlayerController, { 
-            weaponSystem: this.playerWeaponSystem, 
-            tilemap: "Sleeping Slimes",
-            lowerBoundary: this.lowerBoundary
+            lowerBoundary: this.lowerBoundary,
+            weaponSystem: this.playerWeaponSystem,
+            jetpackSystem: this.playerJetpackSystem,
+            tilemap: "Sleeping Slimes" 
         });
         this.player.setScene(this);
     }

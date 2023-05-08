@@ -10,8 +10,11 @@ import MathUtils from "../../Utils/MathUtils";
 import RandUtils from "../../Utils/RandUtils";
 import ParticleSystemManager from "./ParticleSystemManager";
 
+export const ParticleType ={WEAPON: "WEAPON", JETPACK: "JETPACK" };
+
 export default class ParticleSystem implements Updateable {
     /** Pool for all particles */
+
     protected particlePool: Array<Particle>;
 
     /** Lifetime for each particle */
@@ -35,6 +38,8 @@ export default class ParticleSystem implements Updateable {
     protected particlesToRender: number;
 
     protected particleMass: number;
+    
+    protected particleType: string;
 
     /**
      * Construct a particle system
@@ -46,7 +51,7 @@ export default class ParticleSystem implements Updateable {
      * @param mass Initial mass of each particle, can be changed
      * @param maxParticlesPerFrame Total number of particles that can be created during a given frame.
      */
-    constructor(poolSize: number, sourcePoint: Vec2, lifetime: number, size: number, mass: number, maxParticlesPerFrame: number) {
+    constructor(poolSize: number, sourcePoint: Vec2, lifetime: number, size: number, mass: number, maxParticlesPerFrame: number, particleType: string) {
         this.particlePool = new Array(poolSize);
         this.sourcePoint = sourcePoint;
         this.lifetime = lifetime;
@@ -55,7 +60,7 @@ export default class ParticleSystem implements Updateable {
         this.particlesPerFrame = maxParticlesPerFrame;
         this.particlesToRender = this.particlesPerFrame;
         this.particleMass = mass;
-
+        this.particleType = particleType;
         ParticleSystemManager.getInstance().registerParticleSystem(this);
     }
 
@@ -134,32 +139,74 @@ export default class ParticleSystem implements Updateable {
             this.stopSystem();
         }
         else {
-            for (let i = 0; i < this.particlesToRender; i++) {
-                let particle = this.particlePool[i];
-
-                // If a particle is in use, decrease it's age and update it's velocity, if it has one
-                if (particle.inUse) {
-                    particle.decrementAge(deltaT * 1000);
-
-                    if (particle.age <= 0) {
-                        particle.setParticleInactive();
-                    }
-
-                    particle.move(particle.vel.scaled(deltaT));
-                }
-                else {
-                    // Set the particle to active
-                    particle.setParticleActive(this.lifetime, this.sourcePoint.clone());
-
-                    // Update particle color, mass, and alpha
-                    particle.color = this.color;
-                    particle.alpha = 1;
-                    particle.mass = this.particleMass;
+            const sleep = (time: number) => {
+                return new Promise((resolve) => setTimeout(resolve, time))
+              }
+              
+            const doSomething = async () =>  {
                     
-                    // Give particle tween animations
-                    this.setParticleAnimation(particle);
+                    for (let i = 0; i < this.particlesToRender; i++) {
+                    let particle = this.particlePool[i];
 
-                    particle.tweens.play("active");
+                    // If a particle is in use, decrease it's age and update it's velocity, if it has one
+                    if (particle.inUse) {
+                        particle.decrementAge(deltaT * 500);
+
+                        if (particle.age <= 0) {
+                            particle.setParticleInactive();
+                        }
+
+                        particle.move(particle.vel.scaled(deltaT));
+                    }
+                    else {
+                        // Set the particle to active
+                        particle.setParticleActive(this.lifetime, this.sourcePoint.clone());
+
+                        // Update particle color, mass, and alpha
+                        particle.color = this.color;
+                        particle.alpha = 1;
+                        particle.mass = this.particleMass;
+                        
+                        // Give particle tween animations
+                        this.setParticleAnimation(particle);
+
+                        particle.tweens.play("active");
+                    }
+                    await sleep(20)
+                }
+            }
+            if(this.particleType === ParticleType.JETPACK) {
+                
+                doSomething();
+            }
+            else {
+                for (let i = 0; i < this.particlesToRender; i++) {
+                    
+                    let particle = this.particlePool[i];
+                    // If a particle is in use, decrease it's age and update it's velocity, if it has one
+                    if (particle.inUse) {
+                        particle.decrementAge(deltaT * 1000);
+    
+                        if (particle.age <= 0) {
+                            particle.setParticleInactive();
+                        }
+    
+                        particle.move(particle.vel.scaled(deltaT));
+                    }
+                    else {
+                        // Set the particle to active
+                        particle.setParticleActive(this.lifetime, this.sourcePoint.clone());
+    
+                        // Update particle color, mass, and alpha
+                        particle.color = this.color;
+                        particle.alpha = 1;
+                        particle.mass = this.particleMass;
+    
+                        // Give particle tween animations
+                        this.setParticleAnimation(particle);
+    
+                        particle.tweens.play("active");
+                    }
                 }
             }
             // Update the amount of particles that can be rendered based on the particles per frame, clamping if we go over the total number
