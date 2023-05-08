@@ -9,7 +9,9 @@ import Scene from "../../Wolfie2D/Scene/Scene";
 import Color from "../../Wolfie2D/Utils/Color";
 import Level1 from "./JoeLevel1";
 import Level2 from "./JoeLevel1";
-import KevinLevel from './HW3Level1'
+import SamLevel1 from "./SamLevel1";
+import SamLevel2 from "./SamLevel2";
+import KevinLevel from './HW3Level1';
 
 
 // Need to start adding layers
@@ -236,6 +238,9 @@ export default class MainMenu extends Scene {
         level4.setPadding(new Vec2(50, 10));
         level4.font = "PixelSimple";
         level4.onClickEventId = MainMenuEvent.PLAY_GAME;
+        level4.onClick = () => {
+            this.currenLevelNumber = 4;
+        }
 
         const level5 = <Button>this.add.uiElement(UIElementType.BUTTON, MainMenuLayer.LEVELS, {position: new Vec2(size.x, size.y), text: "LVL 5"});
         level5.backgroundColor = Color.BLACK;
@@ -398,8 +403,14 @@ export default class MainMenu extends Scene {
                         this.sceneManager.changeToScene(Level2);
                         break;
                     case 3:
-                        this.sceneManager.changeToScene(KevinLevel);
+                        this.sceneManager.changeToScene(SamLevel1);
                         break;
+                    case 4:
+                        this.sceneManager.changeToScene(SamLevel2);
+                        break;
+                    case 5:
+                        this.sceneManager.changeToScene(KevinLevel);
+                            break;
                     default: 
                     this.sceneManager.changeToScene(Level1);
                     }
