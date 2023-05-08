@@ -7,7 +7,7 @@ import { HW3Controls } from "./hw3/HW3Controls";
 
     // Set up options for our game
     let options = {
-        canvasSize: {x: 1200, y: 800},          // The size of the game
+        canvasSize: {x: 1200, y: 700},          // The size of the game
         clearColor: {r: 34, g: 32, b: 52},   // The color the game clears to
         inputs: [
             {name: HW3Controls.MOVE_LEFT, keys: ["a"]},

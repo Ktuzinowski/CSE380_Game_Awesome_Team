@@ -2,26 +2,23 @@ import StateMachineAI from "../../Wolfie2D/AI/StateMachineAI";
 import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 import OrthogonalTilemap from "../../Wolfie2D/Nodes/Tilemaps/OrthogonalTilemap";
 
-import Airborne from "./PlayerStates/Airborne";
-import Idle from "./PlayerStates/Idle";
-import Run from "./PlayerStates/Run";
-import Fly from "./PlayerStates/Fly";
-import PlayerWeapon from "./PlayerWeapon";
+import Idle from "./SlugmaStates/Idle";
+import Airborne from "./SlugmaStates/Airborne";
 import Input from "../../Wolfie2D/Input/Input";
 
 import { HW3Controls } from "../HW3Controls";
 import HW3AnimatedSprite from "../Nodes/HW3AnimatedSprite";
 import MathUtils from "../../Wolfie2D/Utils/MathUtils";
 import { HW3Events } from "../HW3Events";
-import Dead from "./PlayerStates/Dead";
 import GameEvent from "../../Wolfie2D/Events/GameEvent";
 import Timer, { TimerState } from "../../Wolfie2D/Timing/Timer";
 import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
+import Follow from "./SlugmaStates/Follow";
 
 /**
  * Animation keys for the player spritesheet
  */
-export const PlayerAnimations = {
+export const SlugmaAnimations = {
     IDLE: "IDLE",
     RUN_LEFT: "RUN_LEFT",
     RUN_RIGHT: "RUN_RIGHT",
@@ -34,7 +31,7 @@ export const PlayerAnimations = {
 /**
  * Tween animations the player can player.
  */
-export const PlayerTweens = {
+export const SlugmaTweens = {
     FLIP: "FLIP",
     DEATH: "DEATH"
 } as const
@@ -42,25 +39,19 @@ export const PlayerTweens = {
 /**
  * Keys for the states the PlayerController can be in.
  */
-export const PlayerStates = {
+export const SlugmaStates = {
     IDLE: "IDLE",
-    RUN: "RUN",
-	JUMP: "JUMP",
-    FALL: "FALL",
-    DEAD: "DEAD",
-    FLY: "FLY",
-    AIRBORNE: "AIRBORNE",
-    BOUNCESLIME: "BOUNCESLIME"
+    FOLLOW: "FOLLOW"
 } as const
 
 /**
  * The controller that controls the player.
  */
-export default class PlayerController extends StateMachineAI {
+export default class SlugmaController extends StateMachineAI {
     public readonly MAX_SPEED: number = 200;
     public readonly MIN_SPEED: number = 100;
 
-    /** Health and max health for the player */
+    /** Health and max health for the slugma */
     protected _health: number;
     protected _maxHealth: number;
     protected healthTimer: Timer;
@@ -76,9 +67,11 @@ export default class PlayerController extends StateMachineAI {
     protected _velocity: Vec2;
 	protected _speed: number;
 
+    protected gravity: number;
+
     protected tilemap: OrthogonalTilemap;
     // protected cannon: Sprite;
-    protected weapon: PlayerWeapon;
+    // protected weapon: PlayerWeapon;
 
     protected timerForDeathAnimation: Timer;
 
@@ -93,11 +86,17 @@ export default class PlayerController extends StateMachineAI {
         console.log("Finished bounce")
     })
 
+    // Properties for Pursuing Player
+    public targetXPosition: number = 0
+    public targetYPosition: number = 0
+
+    protected timerForChangingVelocityOfSlugma: Timer = new Timer(10, () => {
+        console.log("Finished chasing")
+    })
+
     
     public initializeAI(owner: HW3AnimatedSprite, options: Record<string, any>){
         this.owner = owner;
-
-        this.weapon = options.weaponSystem;
 
         this.tilemap = this.owner.getScene().getTilemap("Sleeping Slimes") as OrthogonalTilemap;
         console.log("These are the sceneOptions" + this.owner.getScene().sceneOptions)
@@ -110,18 +109,12 @@ export default class PlayerController extends StateMachineAI {
         this.fuel = 100
         this.maxFuel = 100;
         // Add the different states the player can be in to the PlayerController 
-		this.addState(PlayerStates.IDLE, new Idle(this, this.owner));
-		this.addState(PlayerStates.RUN, new Run(this, this.owner));
-        this.addState(PlayerStates.DEAD, new Dead(this, this.owner));
-        this.addState(PlayerStates.FLY, new Fly(this, this.owner));
-        this.addState(PlayerStates.AIRBORNE, new Airborne(this, this.owner));
+		this.addState(SlugmaStates.IDLE, new Idle(this, this.owner));
+        this.addState(SlugmaStates.FOLLOW, new Follow(this, this.owner));
         // this is the parent, this.owner is the owner, use for updating based on events
 
-        this.receiver.subscribe(HW3Events.BOUNCED_ON_PAIN) // bounce on pain
-        this.receiver.subscribe(HW3Events.BOUNCED_ON_SLIME) // bounce on slime
-        this.receiver.subscribe(HW3Events.PICKED_UP_FUEL) // picked up fuel
-        this.receiver.subscribe(HW3Events.INFINITE_FUEL_TOGGLE); // infinite fuel being used
-        this.receiver.subscribe(HW3Events.INFINITE_HEALTH_TOGGLE); // toggle for infinite health
+        this.receiver.subscribe(HW3Events.BOUNCED_ON_SLIME_AI) // bounce on pain
+        this.receiver.subscribe(HW3Events.UPDATE_AI_BASED_ON_PLAYER_POSITION) // update based on player position
         // Start the player in the Idle state
 
         this.fuelTimer = new Timer(300, () => {
@@ -131,17 +124,17 @@ export default class PlayerController extends StateMachineAI {
             this.health -= 2;
         }, false);
         this.fuelTimer.start();
-        this.initialize(PlayerStates.IDLE);
+        this.initialize(SlugmaStates.IDLE);
 
         // Timer for Death Animation
         this.timerForDeathAnimation = new Timer(500,  () => {
-            this.owner.animation.play(PlayerAnimations.DEAD);
-            this.emitter.fireEvent(HW3Events.PLAYER_DEAD);
+            this.owner.animation.play(SlugmaAnimations.DEAD);
+            //this.emitter.fireEvent(HW3Events.PLAYER_DEAD);
         })
 
         // // Timer for Pain Animation
         this.timerForDamageAnimation = new Timer(50, () => {
-            this.owner.animation.play(PlayerAnimations.FLY);
+            this.owner.animation.play(SlugmaAnimations.FLY);
         })
     }
 
@@ -154,7 +147,6 @@ export default class PlayerController extends StateMachineAI {
 		direction.y = (Input.isJustPressed(HW3Controls.JUMP) ? -1 : 0);
 		return direction;
     }
-
     /** 
      * Gets the direction of the mouse from the player's position as a Vec2
      */
@@ -164,38 +156,14 @@ export default class PlayerController extends StateMachineAI {
 		super.update(deltaT);
         this.deltaT = deltaT;
         if (this.owner.position.y > 400 && (!(this.timerForDeathAnimation.getCurrentStateOfTimer() === TimerState.ACTIVE) || this.timerForDeathAnimation.hasRun())) {
-            this.owner.animation.play(PlayerAnimations.DYING, false);
+            this.owner.animation.play(SlugmaAnimations.DYING, false);
             this.timerForDeathAnimation.start();
             this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.owner.getScene().getDeathAudioKey(), loop: false, holdReference: false});
         }
-        this.emitter.fireEvent(HW3Events.UPDATE_AI_BASED_ON_PLAYER_POSITION, {
-            xPosition: this.owner.position.x,
-            yPosition: this.owner.position.y
-        })
         if (this.timerForDeathAnimation.getCurrentStateOfTimer() === TimerState.ACTIVE || this.timerForDeathAnimation.hasRun()) {
             console.log("Returning from here...")
             return;
         }
-        // Update the rotation to apply the particles velocity vector
-        this.weapon.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
-
-        // If the player hits the attack button and the weapon system isn't running, restart the system and fire!
-        /*
-        if (Input.isPressed(HW3Controls.ATTACK) && !this.weapon.isSystemRunning()) {
-            // Update the rotation to apply the particles velocity vector
-            this.weapon.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
-            // Start the particle system at the player's current position
-            this.weapon.startSystem(500, 0, this.owner.position);
-        }
-        */
-        /*
-            This if-statement will place a tile wherever the user clicks on the screen. I have
-            left this here to make traversing the map a little easier, incase you accidently
-            destroy everything with the player's weapon.
-        */
-        // if (Input.isMousePressed()) {
-        //     this.tilemap.setTileAtRowCol(this.tilemap.getColRowAt(Input.getGlobalMousePosition()),5);
-        // }
         while (this.receiver.hasNextEvent()) {
             this.handleEvent(this.receiver.getNextEvent());
         }
@@ -207,56 +175,30 @@ export default class PlayerController extends StateMachineAI {
      */
     public handleEvent(event: GameEvent): void {
         switch (event.type) {
-            case HW3Events.BOUNCED_ON_PAIN: {
-                if (this.healthTimer.getCurrentStateOfTimer() === TimerState.ACTIVE) {
-                    break;
-                } else {
-                    this.healthTimer.start();
-                    if (!this.owner.animation.isPlaying(PlayerAnimations.DYING) && !this.owner.animation.isPlaying(PlayerAnimations.DEAD)) {
-                        this.owner.animation.playIfNotAlready(PlayerAnimations.DAMAGE);
-                        // Painful Slime Sound
-		                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.owner.getScene().getPainfulSlimeBounceAudioKey(), loop: false, holdReference: false});
-                    }
-                }
-                if (this.slimeBounceTimer.getCurrentStateOfTimer() === TimerState.ACTIVE) {
+            case HW3Events.BOUNCED_ON_SLIME_AI: {
+                // if (this.slimeBounceTimer.getCurrentStateOfTimer() === TimerState.ACTIVE) {
+                //     return;
+                // } else {
+                //     this.slimeBounceTimer.reset();
+                //     this.slimeBounceTimer.start();
+                //     //  this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.owner.getScene().getSlimeBounceAudioKey(), loop: false, holdReference: false});
+                // }
+                // this.velocity.y *= 2.85;
+                // console.log(this.velocity.y + " SLIME")
+                // this.owner.move(this.velocity.scaled(this.deltaT));
+                break;
+            }
+            case HW3Events.UPDATE_AI_BASED_ON_PLAYER_POSITION: {
+                if (this.timerForChangingVelocityOfSlugma.getCurrentStateOfTimer() === TimerState.ACTIVE) {
                     return;
                 } else {
-                    this.slimeBounceTimer.reset();
-                    this.slimeBounceTimer.start();
+                    this.timerForChangingVelocityOfSlugma.reset();
+                    this.timerForChangingVelocityOfSlugma.start();
                 }
-                this.velocity.y *= 2.85
-                console.log("This is painful...")
-                break;
-            }
-            case HW3Events.BOUNCED_ON_SLIME: {
-                if (this.slimeBounceTimer.getCurrentStateOfTimer() === TimerState.ACTIVE) {
-                    return;
-                } else {
-                    this.slimeBounceTimer.reset();
-                    this.slimeBounceTimer.start();
-                    this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.owner.getScene().getSlimeBounceAudioKey(), loop: false, holdReference: false});
-                }
-                this.velocity.y *= 2.85;
-                console.log(this.velocity.y + " SLIME")
-                this.owner.move(this.velocity.scaled(this.deltaT));
-                break;
-            }
-            case HW3Events.PICKED_UP_FUEL: {
-                this.fuel  += 20;
-                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.owner.getScene().getFuelpackAudio(), loop: false, holdReference: false});
-                break;
-            }
-            case HW3Events.INFINITE_FUEL_TOGGLE: {
-                // get properties to eventually update to max fuel afterwards
-                this.infiniteFuel = !this.infiniteFuel;
-                this._fuel = this.maxFuel
-                this.emitter.fireEvent(HW3Events.FUEL_CHANGE, {curfuel: this.maxFuel, maxfuel: this.maxFuel});
-                break;
-            }
-            case HW3Events.INFINITE_HEALTH_TOGGLE: {
-                this.infiniteHealth = !this.infiniteHealth;
-                this._health = this.maxHealth;
-                this.emitter.fireEvent(HW3Events.HEALTH_CHANGE, {curhp: this.maxHealth, maxhp: this.maxHealth});
+                const xPositionOfPlayer = event.data.get("xPosition")
+                const yPositionOfPlayer = event.data.get("yPosition")
+                this.targetXPosition = xPositionOfPlayer;
+                this.targetYPosition = yPositionOfPlayer;
                 break;
             }
             // Default: Throw an error! No unhandled events allowed.
@@ -286,7 +228,7 @@ export default class PlayerController extends StateMachineAI {
         this.emitter.fireEvent(HW3Events.HEALTH_CHANGE, {curhp: this.health, maxhp: this.maxHealth});
         // If the health hit 0, change the state of the player
         if (this.health == 0 && this.timerForDeathAnimation.getCurrentStateOfTimer() !== TimerState.ACTIVE) {
-            this.owner.animation.play(PlayerAnimations.DYING, false);
+            this.owner.animation.play(SlugmaAnimations.DYING, false);
             this.timerForDeathAnimation.start();
             this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.owner.getScene().getDeathAudioKey(), loop: false, holdReference: false});
         }
@@ -300,6 +242,6 @@ export default class PlayerController extends StateMachineAI {
             return;
         }
         this._fuel = MathUtils.clamp(fuel, 0, this.maxFuel);
-        this.emitter.fireEvent(HW3Events.FUEL_CHANGE, {curfuel: this.fuel, maxfuel: this.maxFuel});
+        //this.emitter.fireEvent(HW3Events.FUEL_CHANGE, {curfuel: this.fuel, maxfuel: this.maxFuel});
     }
 }
