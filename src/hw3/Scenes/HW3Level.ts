@@ -122,6 +122,7 @@ export default abstract class HW3Level extends Scene {
     //public static readonly FUELPACK_PATH = "hw4_assets/fuelpack.png"
     protected fuelpacks1: Array<Sprite>;
     protected ai_characters: Array<Sprite>;
+    protected lowerBoundary: number = undefined;
 
     public constructor(viewport: Viewport, sceneManager: SceneManager, renderingManager: RenderingManager, options: Record<string, any>) {
         super(viewport, sceneManager, renderingManager, {...options, physics: {
@@ -559,7 +560,8 @@ export default abstract class HW3Level extends Scene {
 
         this.player.addAI(PlayerController, { 
             weaponSystem: this.playerWeaponSystem, 
-            tilemap: "Sleeping Slimes" 
+            tilemap: "Sleeping Slimes",
+            lowerBoundary: this.lowerBoundary
         });
         this.player.setScene(this);
     }

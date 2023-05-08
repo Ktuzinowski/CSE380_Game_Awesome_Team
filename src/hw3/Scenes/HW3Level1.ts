@@ -120,6 +120,9 @@ export default class Level1 extends HW3Level {
         this.load.audio(this.deathAudioKey, Level1.DEATH_AUDIO_PATH);
         this.load.audio(this.fuelpackAudioKey, Level1.FUEL_PACK_PATH);
         this.load.audio(this.tileDestroyedAudioKey, Level1.TILE_DESTROYED_PATH);
+
+        // Load Scene Set Property for lower boundary for player
+        this.lowerBoundary = 400
     }
 
     /**
