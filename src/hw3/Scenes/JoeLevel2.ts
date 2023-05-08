@@ -80,7 +80,7 @@ export default class JoeLevel1 extends HW3Level {
         this.fuelpackAudioKey = JoeLevel1.FUEL_PACK_KEY;
 
         // Level end size and position
-        this.levelEndPosition = new Vec2(32, 216).mult(this.tilemapScale);
+        this.levelEndPosition = new Vec2(740, 745).mult(this.tilemapScale);
         this.levelEndHalfSize = new Vec2(32, 32).mult(this.tilemapScale);
     }
     /**
@@ -91,8 +91,10 @@ export default class JoeLevel1 extends HW3Level {
         this.load.tilemap(this.tilemapKey, JoeLevel1.TILEMAP_PATH);
         this.load.spritesheet(this.playerSpriteKey, JoeLevel1.PLAYER_SPRITE_PATH);
         this.load.image(this.fuelpackKey, JoeLevel1.FUELPACK_PATH)
-        this.load.object("Fuelpacks1", "hw4_assets/Fuelpacks1.json");
+        this.load.object("Fuelpacks2", "hw4_assets/Fuelpacks2.json");
         this.load.image("fuelpack", "hw4_assets/fuelpack.png");
+        this.load.image("background", "hw4_assets/moon.png");
+
         //this.fuelpacks = new Array<Fuelpack>();
         //console.log("YOOOOOOOOOO" + fuelpacks.items.length)
         //for(let i = 0; i < fuelpacks.items.length; i++) {
@@ -107,7 +109,7 @@ export default class JoeLevel1 extends HW3Level {
     public startScene(): void {
         super.startScene();
         this.fuelpacks1 = new Array(12)
-        let Fuelpacks =  this.load.getObject("Fuelpacks1")
+        let Fuelpacks =  this.load.getObject("Fuelpacks2")
         for(let i = 0; i < this.fuelpacks1.length; i++) {
             this.fuelpacks1[i] = this.add.sprite(JoeLevel1.FUELPACK_KEY, HW3Layers.PRIMARY);
             this.fuelpacks1[i].visible = true;
@@ -122,6 +124,10 @@ export default class JoeLevel1 extends HW3Level {
             this.fuelpacks1[i].position.set(Fuelpacks.items[i][0]*2, Fuelpacks.items[i][1]*2-2)
         }
         this.nextLevel = MainMenu;
+        this.addParallaxLayer("bg", new Vec2(1, 1), -1);
+        let bg = this.add.sprite("background", HW3Layers.BACKGROUND);
+        bg.position.set(bg.size.x/2, bg.size.y/2);
+
         //this.receiver.subscribe(HW3Events.PICKED_UP_FUEL);
     }
     public updateScene(deltaT: number) {
