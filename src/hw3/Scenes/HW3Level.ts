@@ -40,7 +40,6 @@ export const HW3Layers = {
     PRIMARY: "PRIMARY",
     // The UI layer
     UI: "UI",
-    BACKGROUND: "bg"
 } as const;
 
 // The layers as a type
