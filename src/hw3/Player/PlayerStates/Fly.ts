@@ -14,7 +14,7 @@ export default class Fly extends PlayerState {
         if(this.parent.fuel !== 0) {
             
         this.parent.fuel -= 1.4;
-        this.parent.velocity.y += -15;
+        this.parent.velocity.y += -10;
         }
 	}
 
