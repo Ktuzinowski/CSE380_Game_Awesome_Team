@@ -12,6 +12,7 @@ import Level2 from "./JoeLevel1";
 import SamLevel1 from "./SamLevel1";
 import SamLevel2 from "./SamLevel2";
 import KevinLevel from './HW3Level1';
+import KevinLevel2 from './HW3Level2'
 
 
 // Need to start adding layers
@@ -411,6 +412,9 @@ export default class MainMenu extends Scene {
                     case 5:
                         this.sceneManager.changeToScene(KevinLevel);
                             break;
+                    case 6:
+                        this.sceneManager.changeToScene(KevinLevel2);
+                        break;
                     default: 
                     this.sceneManager.changeToScene(Level1);
                     }
