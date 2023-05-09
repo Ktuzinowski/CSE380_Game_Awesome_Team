@@ -235,7 +235,10 @@ export default class PlayerController extends StateMachineAI {
                     this.slimeBounceTimer.reset();
                     this.slimeBounceTimer.start();
                 }
-                this.velocity.y *= 2.85
+                const isSlugma = event.data.get("isSlugma");
+                if (!isSlugma) {
+                    this.velocity.y *= 2.85
+                }
                 console.log("This is painful...")
                 break;
             }

@@ -9,6 +9,7 @@ import Input from "../../Wolfie2D/Input/Input";
 import { HW3Controls } from "../HW3Controls";
 import { HW3Events } from "../HW3Events";
 import { HW3PhysicsGroups } from "../HW3PhysicsGroups";
+import Level2 from "./HW3Level2";
 
 /**
  * The first level for HW4 - should be the one with the grass and the clouds.
@@ -180,7 +181,7 @@ export default class Level1 extends HW3Level {
 
     public updateScene(deltaT: number) {
         if (Input.isPressed(HW3Controls.LEVEL_TWO)) {
-            this.sceneManager.changeToScene(JoeLevel1);     
+            this.sceneManager.changeToScene(Level2);     
         }
         else if (Input.isPressed(HW3Controls.INF_FUEL)) {
             this.emitter.fireEvent(HW3Events.INFINITE_FUEL_TOGGLE);

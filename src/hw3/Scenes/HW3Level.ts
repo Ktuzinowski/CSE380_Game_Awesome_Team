@@ -29,6 +29,7 @@ import Sprite from "../../Wolfie2D/Nodes/Sprites/Sprite";
 import SlugmaController, { SlugmaAnimations } from "../Slugma/SlugmaController";
 import PlayerJetpack from "../Player/PlayerJetpack";
 import { ParticleType } from "../../Wolfie2D/Rendering/Animations/ParticleSystem";
+import SlugmaJetpack from "../Player/SlugmaJetpack";
 
 /**
  * A const object for the layer names
@@ -135,15 +136,17 @@ export default abstract class HW3Level extends Scene {
                 HW3PhysicsGroups.PLAYER, 
                 HW3PhysicsGroups.SLUGMA,
                 HW3PhysicsGroups.PLAYER_WEAPON, 
-                HW3PhysicsGroups.FUELPACKS
+                HW3PhysicsGroups.FUELPACKS,
+                HW3PhysicsGroups.SLUGMA_JETPACK
             ],
             collisions:
             [
-                [0, 1, 1, 1, 1],
-                [1, 0, 0, 1, 1],
-                [1, 0, 0, 1, 1],
-                [1, 0, 0, 1, 1],
-                [1, 0, 0, 1, 1]
+                [0, 1, 1, 1, 1, 0],
+                [1, 0, 0, 1, 1, 1],
+                [1, 1, 1, 1, 0, 0],
+                [1, 0, 0, 1, 1, 0],
+                [1, 0, 0, 1, 1, 0],
+                [1, 0, 0, 1, 1, 0],
             ]
         }});
         this.add = new HW3FactoryManager(this, this.tilemaps);
@@ -390,9 +393,6 @@ export default abstract class HW3Level extends Scene {
 
 
         // Add physics to the destructible layer of the tilemap
-        // this.destructable.addPhysics();
-        // this.destructable.setGroup(HW3PhysicsGroups.DESTRUCTABLE);
-        // this.destructable.setTrigger(HW3PhysicsGroups.PLAYER_WEAPON, HW3Events.PARTICLE_HIT_DESTRUCTIBLE, null);
         console.log(this.walls);
         console.log(this.painfulSlimes);
         if(this.painfulSlimes !== null) {
@@ -407,7 +407,7 @@ export default abstract class HW3Level extends Scene {
         }
 
         // bouncing on sleepy slimes
-        this.sleepingSlimes.setTrigger(HW3PhysicsGroups.SLUGMA, HW3Events.BOUNCED_ON_SLIME_AI, null)
+        //this.sleepingSlimes.setTrigger(HW3PhysicsGroups.SLUGMA, HW3Events.BOUNCED_ON_SLIME_AI, null)
         this.sleepingSlimes.setTrigger(HW3PhysicsGroups.PLAYER, HW3Events.BOUNCED_ON_SLIME, null)
     }
     /**
@@ -616,10 +616,15 @@ export default abstract class HW3Level extends Scene {
                 }
             ]
         });
-
+        const slugmaWeaponSystem = new PlayerWeapon(50, Vec2.ZERO, 1000, 3, 0, 50, ParticleType.WEAPON);
+        slugmaWeaponSystem.initializePool(this, HW3Layers.PRIMARY);
+        const slugmaJetpackSystem = new SlugmaJetpack(25,Vec2.ZERO,1000,3,0,50, ParticleType.JETPACK);
+        slugmaJetpackSystem.initializePool(this, HW3Layers.PRIMARY);
         slugmaAnimatedSprite.addAI(SlugmaController, {
             tilemap: "Sleeping Slimes",
-            player: this.player
+            player: this.player,
+            weaponSystem: slugmaWeaponSystem,
+            jetpackSystem: slugmaJetpackSystem
         })
         slugmaAnimatedSprite.setScene(this);
         slugmaAnimatedSprite.setTrigger(HW3PhysicsGroups.PLAYER, HW3Events.BOUNCED_ON_PAIN,null);

@@ -1,7 +1,5 @@
 import { SlugmaStates, SlugmaAnimations } from "../SlugmaController";
 import PlayerState from "./PlayerState";
-import Input from "../../../Wolfie2D/Input/Input";
-import { HW3Controls } from "../../HW3Controls";
 
 export default class Idle extends PlayerState {
 
@@ -24,7 +22,9 @@ export default class Idle extends PlayerState {
         //     console.log("Entering into the airborne state");
         //     this.finished(SlugmaStates.AIRBORNE);
         // }
-        if (this.parent.targetXPosition < 200) {
+        const differenceOfX = Math.abs(this.parent.targetXPosition  - this.owner.position.x);
+ 
+        if (differenceOfX < 200) {
             this.finished(SlugmaStates.FOLLOW)
         }
 		
