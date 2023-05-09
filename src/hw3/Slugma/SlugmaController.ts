@@ -217,6 +217,7 @@ export default class SlugmaController extends StateMachineAI {
                     this.invincible.reset();
                     this.invincible.start();
                 }
+                this.owner.animation.playIfNotAlready(SlugmaAnimations.DAMAGE)
                 break;
             }
             // Default: Throw an error! No unhandled events allowed.

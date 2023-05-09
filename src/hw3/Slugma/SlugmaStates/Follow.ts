@@ -17,9 +17,13 @@ export default class Follow extends PlayerState {
 		this.parent.speed = this.parent.MIN_SPEED;
         const shouldTurnLeft = options.shouldTurnLeft;
         if (shouldTurnLeft) {
-            this.owner.animation.playIfNotAlready(SlugmaAnimations.RUN_LEFT, true);
+            if (!(this.owner.animation.isPlaying(SlugmaAnimations.DAMAGE) || this.owner.animation.isPlaying(SlugmaAnimations.DYING))) {
+                this.owner.animation.playIfNotAlready(SlugmaAnimations.RUN_LEFT, true);
+            }
         } else {
-            this.owner.animation.playIfNotAlready(SlugmaAnimations.RUN_RIGHT, true);
+            if (!(this.owner.animation.isPlaying(SlugmaAnimations.DAMAGE) || this.owner.animation.isPlaying(SlugmaAnimations.DYING))) {
+                this.owner.animation.playIfNotAlready(SlugmaAnimations.RUN_RIGHT, true);
+            }
         }
 	}
 
@@ -46,10 +50,14 @@ export default class Follow extends PlayerState {
         } 
         else if (differenceOfX > 0) {
             this.parent.velocity.x = this.parent.speed / 4
-            this.owner.animation.playIfNotAlready(SlugmaAnimations.RUN_RIGHT, true);
+            if (!(this.owner.animation.isPlaying(SlugmaAnimations.DAMAGE) || this.owner.animation.isPlaying(SlugmaAnimations.DYING))) {
+                this.owner.animation.playIfNotAlready(SlugmaAnimations.RUN_RIGHT, true);
+            }
         }  else {
             this.parent.velocity.x = -this.parent.speed / 4
-            this.owner.animation.playIfNotAlready(SlugmaAnimations.RUN_LEFT, true);
+            if (!(this.owner.animation.isPlaying(SlugmaAnimations.DAMAGE) || this.owner.animation.isPlaying(SlugmaAnimations.DYING))) {
+                this.owner.animation.playIfNotAlready(SlugmaAnimations.RUN_LEFT, true);
+            }
         }
 
         const differenceOfY = this.parent.targetYPosition - this.owner.position.y;
