@@ -1,8 +1,8 @@
 {
-    "name": "MadcargoGoing",
-    "spriteSheetImage": "MadcargoGoing.png",
-    "spriteWidth": 106,
-    "spriteHeight": 112,
+    "name": "SlugmaGoing",
+    "spriteSheetImage": "SlugmaGoing.png",
+    "spriteWidth": 82,
+    "spriteHeight": 86,
     "columns": 3,
     "rows": 3,
     "durationType": "time",
@@ -12,12 +12,12 @@
             "frames": [ {"index": 0, "duration": 16} ]
         },
         {
-            "name": "RUN_LEFT",
+            "name": "RUN_RIGHT",
             "frames": [ {"index": 0, "duration": 4}, {"index": 1, "duration": 4}, {"index": 2, "duration": 4} ]
         },
         {
-            "name": "RUN_RIGHT",
-            "frames": [ {"index": 3, "duration": 4}, {"index": 4, "duration": 4}, {"index": 5, "duration": 4} ]
+            "name": "RUN_LEFT",
+            "frames": [ {"index": 3, "duration": 4}, {"index": 4, "duration": 4}, {"index": 3, "duration": 4} ]
         },
         {
             "name": "DYING",

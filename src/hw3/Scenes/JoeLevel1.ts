@@ -10,7 +10,8 @@ import { HW3Events } from "../HW3Events";
 import MainMenu from "./MainMenu";
 import { HW3Controls } from "../HW3Controls";
 import Input from "../../Wolfie2D/Input/Input";
-import Level1 from "./HW3Level1";
+import JoeLevel2 from "./JoeLevel2";
+
 /**
  * The second level for HW4. It should be the goose dungeon / cave.
  */
@@ -125,7 +126,7 @@ export default class JoeLevel1 extends HW3Level {
     }
     public updateScene(deltaT: number) {
         if (Input.isPressed(HW3Controls.LEVEL_ONE)) {
-            this.sceneManager.changeToScene(Level1)
+            this.sceneManager.changeToScene(JoeLevel2)
         }
         else if (Input.isPressed(HW3Controls.INF_FUEL)) {
             this.emitter.fireEvent(HW3Events.INFINITE_FUEL_TOGGLE);

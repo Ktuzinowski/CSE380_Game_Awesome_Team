@@ -14,6 +14,7 @@ import GameEvent from "../../Wolfie2D/Events/GameEvent";
 import Timer, { TimerState } from "../../Wolfie2D/Timing/Timer";
 import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 import Follow from "./SlugmaStates/Follow";
+import SlugmaJetpack from "../Player/SlugmaJetpack";
 
 /**
  * Animation keys for the player spritesheet
@@ -76,10 +77,12 @@ export default class SlugmaController extends StateMachineAI {
     protected timerForDeathAnimation: Timer;
 
     protected timerForDamageAnimation: Timer;
-
+    protected invincible: Timer;
     // Determining if Player has Infinite Fuel
     protected infiniteFuel: boolean = false;
     protected infiniteHealth: boolean = false;
+
+    public jetpack: SlugmaJetpack;
 
     protected deltaT: number = 0;
     protected slimeBounceTimer: Timer = new Timer(100, () => {
@@ -91,7 +94,7 @@ export default class SlugmaController extends StateMachineAI {
     public targetYPosition: number = 0
 
     protected timerForChangingVelocityOfSlugma: Timer = new Timer(10, () => {
-        console.log("Finished chasing")
+        //console.log("Finished chasing")
     })
 
     
@@ -103,7 +106,7 @@ export default class SlugmaController extends StateMachineAI {
         console.log("This is the tilemap + "  + this.tilemap);
         this.speed = 400;
         this.velocity = Vec2.ZERO;
-
+        this.jetpack = options.jetpackSystem;
         this.health = 10
         this.maxHealth = 10;
         this.fuel = 100
@@ -115,6 +118,7 @@ export default class SlugmaController extends StateMachineAI {
 
         this.receiver.subscribe(HW3Events.BOUNCED_ON_SLIME_AI) // bounce on pain
         this.receiver.subscribe(HW3Events.UPDATE_AI_BASED_ON_PLAYER_POSITION) // update based on player position
+        this.receiver.subscribe(HW3Events.PARTICLE_HIT_SLUGMA)
         // Start the player in the Idle state
 
         this.fuelTimer = new Timer(300, () => {
@@ -125,11 +129,14 @@ export default class SlugmaController extends StateMachineAI {
         }, false);
         this.fuelTimer.start();
         this.initialize(SlugmaStates.IDLE);
+        this.invincible = new Timer(500, () => {
+        });
 
         // Timer for Death Animation
-        this.timerForDeathAnimation = new Timer(500,  () => {
+        this.timerForDeathAnimation = new Timer(1500,  () => {
             this.owner.animation.play(SlugmaAnimations.DEAD);
             //this.emitter.fireEvent(HW3Events.PLAYER_DEAD);
+            this.emitter.fireEvent(HW3Events.SLUGMA_DEAD, {id: this.owner.id});
         })
 
         // // Timer for Pain Animation
@@ -201,6 +208,17 @@ export default class SlugmaController extends StateMachineAI {
                 this.targetYPosition = yPositionOfPlayer;
                 break;
             }
+            case HW3Events.PARTICLE_HIT_SLUGMA: {
+                if(this.invincible.getCurrentStateOfTimer() === TimerState.ACTIVE) {
+                    return;
+                }
+                else {
+                    this.health-=3;
+                    this.invincible.reset();
+                    this.invincible.start();
+                }
+                break;
+            }
             // Default: Throw an error! No unhandled events allowed.
             default: {
                 throw new Error(`Unhandled event caught in scene with type ${event.type}`)
@@ -225,9 +243,10 @@ export default class SlugmaController extends StateMachineAI {
         }
         this._health = MathUtils.clamp(health, 0, this.maxHealth);
         // When the health changes, fire an event up to the scene.
-        this.emitter.fireEvent(HW3Events.HEALTH_CHANGE, {curhp: this.health, maxhp: this.maxHealth});
+        //this.emitter.fireEvent(HW3Events.HEALTH_CHANGE, {curhp: this.health, maxhp: this.maxHealth});
         // If the health hit 0, change the state of the player
-        if (this.health == 0 && this.timerForDeathAnimation.getCurrentStateOfTimer() !== TimerState.ACTIVE) {
+        if (this.health === 0 && this.timerForDeathAnimation.getCurrentStateOfTimer() !== TimerState.ACTIVE) {
+            this.timerForDeathAnimation.reset();
             this.owner.animation.play(SlugmaAnimations.DYING, false);
             this.timerForDeathAnimation.start();
             this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.owner.getScene().getDeathAudioKey(), loop: false, holdReference: false});
