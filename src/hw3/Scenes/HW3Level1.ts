@@ -160,7 +160,7 @@ export default class Level1 extends HW3Level {
 
         // Adding AIs into the layers
         let AI_SLUGMAS =  this.load.getObject("AI_SLUGMA")
-        this.ai_characters = new Array(1)
+        this.ai_characters = new Array(2)
         for(let i = 0; i < this.ai_characters.length; i++) {
             const spriteOfSlugma = this.add.animatedSprite(Level1.SLUGMA_SPRITE_KEY, HW3Layers.PRIMARY);
             spriteOfSlugma.visible = true;

@@ -141,7 +141,7 @@ export default abstract class HW3Level extends Scene {
             [
                 [0, 1, 1, 1, 1],
                 [1, 0, 0, 1, 1],
-                [1, 0, 0, 1, 1],
+                [1, 1, 0, 1, 0],
                 [1, 0, 0, 1, 1],
                 [1, 0, 0, 1, 1]
             ]
