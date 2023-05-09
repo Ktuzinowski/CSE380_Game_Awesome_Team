@@ -23,6 +23,7 @@ export default class Follow extends PlayerState {
         const differenceOfX = this.parent.targetXPosition  - this.owner.position.x;
         const differenceOfY = this.parent.targetYPosition - this.owner.position.y;
         console.log(this.parent.targetXPosition +  " "  + this.parent.targetYPosition)
+        console.log(this.owner.position.x + "YOOOOOOOOOOOOOO" + this.owner.position.y + "AYYYYYYYYYYYYYYY")
         // console.log("Difference " + differenceOfX)
         if (differenceOfX > 200) {
             // too far away to chase the player

@@ -7,11 +7,11 @@ import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Layer from "../../Wolfie2D/Scene/Layer";
 import Scene from "../../Wolfie2D/Scene/Scene";
 import Color from "../../Wolfie2D/Utils/Color";
-import Level1 from "./JoeLevel1";
-import Level2 from "./JoeLevel1";
+import JoeLevel1 from "./JoeLevel1";
+import JoeLevel2 from "./JoeLevel2";
 import SamLevel1 from "./SamLevel1";
 import SamLevel2 from "./SamLevel2";
-import KevinLevel from './HW3Level1';
+import KevinLevel1 from './HW3Level1';
 
 
 // Need to start adding layers
@@ -397,22 +397,25 @@ export default class MainMenu extends Scene {
                 console.log(event);
                 switch (this.currenLevelNumber) {
                     case 1:
-                        this.sceneManager.changeToScene(Level1);
-                        break;
-                    case 2:
-                        this.sceneManager.changeToScene(Level2);
-                        break;
-                    case 3:
                         this.sceneManager.changeToScene(SamLevel1);
                         break;
-                    case 4:
+                    case 2:
                         this.sceneManager.changeToScene(SamLevel2);
                         break;
+                    case 3:
+                        this.sceneManager.changeToScene(JoeLevel1);
+                        break;
+                    case 4:
+                        this.sceneManager.changeToScene(JoeLevel2)
+                        break;
                     case 5:
-                        this.sceneManager.changeToScene(KevinLevel);
-                            break;
+                        this.sceneManager.changeToScene(KevinLevel1);
+                        break;
+                    case 6:
+                        this.sceneManager.changeToScene(KevinLevel1);
+                        break;
                     default: 
-                    this.sceneManager.changeToScene(Level1);
+                    this.sceneManager.changeToScene(SamLevel1);
                     }
                 break;
             }

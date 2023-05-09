@@ -62,7 +62,7 @@ export default abstract class GameNode implements Positioned, Unique, Updateable
 
 	/*---------- GENERAL ----------*/
 	/** An event receiver. */
-	protected receiver: Receiver;
+	public receiver: Receiver;
 	/** An event emitter. */
 	protected emitter: Emitter;
 	/** A reference to the scene this GameNode is a part of. */
