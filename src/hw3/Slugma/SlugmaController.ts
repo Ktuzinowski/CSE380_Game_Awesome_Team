@@ -14,6 +14,7 @@ import GameEvent from "../../Wolfie2D/Events/GameEvent";
 import Timer, { TimerState } from "../../Wolfie2D/Timing/Timer";
 import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 import Follow from "./SlugmaStates/Follow";
+import SlugmaJetpack from "../Player/SlugmaJetpack";
 
 /**
  * Animation keys for the player spritesheet
@@ -81,6 +82,8 @@ export default class SlugmaController extends StateMachineAI {
     protected infiniteFuel: boolean = false;
     protected infiniteHealth: boolean = false;
 
+    public jetpack: SlugmaJetpack;
+
     protected deltaT: number = 0;
     protected slimeBounceTimer: Timer = new Timer(100, () => {
         console.log("Finished bounce")
@@ -103,7 +106,7 @@ export default class SlugmaController extends StateMachineAI {
         console.log("This is the tilemap + "  + this.tilemap);
         this.speed = 400;
         this.velocity = Vec2.ZERO;
-
+        this.jetpack = options.jetpackSystem;
         this.health = 10
         this.maxHealth = 10;
         this.fuel = 100

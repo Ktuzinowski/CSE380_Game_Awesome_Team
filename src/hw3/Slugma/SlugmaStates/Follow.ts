@@ -58,7 +58,14 @@ export default class Follow extends PlayerState {
             } else {
                 this.timerForIncreasingYVelocity.reset();
                 this.timerForIncreasingYVelocity.start();
-                this.parent.velocity.y += -30;
+                this.parent.velocity.y += -15;
+
+                if (!this.parent.jetpack.isSystemRunning()) {
+                    // Update the rotation to apply the particles velocity vector
+                    //this.weapon.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
+                    // Start the particle system at the player's current position
+                    this.parent.jetpack.startSystem(500, 0, this.owner.position);
+                }
             }
             this.parent.velocity.y += this.gravity*deltaT;
         }
@@ -68,15 +75,15 @@ export default class Follow extends PlayerState {
                 this.timerForIncreasingYVelocity.reset();
                 this.timerForIncreasingYVelocity.start();
                 if (differenceOfY > 50) {
-                    this.parent.velocity.y += -30;
+                    this.parent.velocity.y += -5;
                 }
             }
             this.parent.velocity.y += this.gravity*deltaT;
             // this.parent.velocity.y += -30;
             // this.parent.velocity.y += this.gravity*deltaT;
         }
-        else if (!this.owner.onGround) {
-            this.parent.velocity.y += this.gravity*deltaT;
+        else if (this.owner.onGround) {
+            this.parent.velocity.y = 12;
         }
         console.log("The Y velocity of the SLUGMA " + this.parent.velocity.y);
         if (this.parent.velocity.y < -30) {
